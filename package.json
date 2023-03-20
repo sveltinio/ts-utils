@@ -21,6 +21,8 @@
 		"dates"
 	],
 	"devDependencies": {
+		"@release-it/conventional-changelog": "^5.1.1",
+		"@release-it/keep-a-changelog": "^3.1.0",
 		"@tsconfig/recommended": "^1.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.55.0",
 		"@typescript-eslint/parser": "^5.55.0",
@@ -30,6 +32,7 @@
 		"eslint-config-prettier": "^8.7.0",
 		"prettier": "^2.8.5",
 		"publint": "^0.1.10",
+		"release-it": "^15.9.0",
 		"tsup": "^6.7.0",
 		"typescript": "^5.0.2",
 		"vite": "^4.2.1",
@@ -43,6 +46,8 @@
 		"lint:fix": "prettier --plugin-search-dir=. --check . && eslint --fix .",
 		"postbuild": "pnpm exec publint .",
 		"postinstall": "git config core.hooksPath .githooks",
+		"release": "pnpm build && pnpm exec release-it",
+		"release:dryRun": "pnpm build && pnpm exec release-it --dry-run",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest watch"
