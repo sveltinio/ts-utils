@@ -20,6 +20,9 @@
 		"collections",
 		"dates"
 	],
+	"dependencies": {
+		"esm-env": "^1.0.0"
+	},
 	"devDependencies": {
 		"@release-it/conventional-changelog": "^5.1.1",
 		"@release-it/keep-a-changelog": "^3.1.0",
@@ -30,7 +33,6 @@
 		"c8": "^7.13.0",
 		"eslint": "^8.36.0",
 		"eslint-config-prettier": "^8.7.0",
-		"esm-env": "^1.0.0",
 		"prettier": "^2.8.5",
 		"publint": "^0.1.10",
 		"release-it": "^15.9.0",
