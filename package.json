@@ -1,0 +1,103 @@
+{
+	"name": "@sveltinio/ts-utils",
+	"version": "0.0.0",
+	"packageManager": "pnpm@7.30.0",
+	"description": "A bunch of utilities in Typescript used by Sveltin based projects to deal with strings, urls, collections and dates.",
+	"author": "sveltinio <dev@sveltin.io>",
+	"license": "MIT",
+	"homepage": "https://github.com/sveltinio/ts-utils#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sveltinio/ts-utils.git"
+	},
+	"bugs": "https://github.com/sveltinio/ts-utils/issues",
+	"keywords": [
+		"utilities",
+		"helpers",
+		"typescript",
+		"strings",
+		"urls",
+		"collections",
+		"dates"
+	],
+	"devDependencies": {
+		"@tsconfig/recommended": "^1.0.2",
+		"@typescript-eslint/eslint-plugin": "^5.55.0",
+		"@typescript-eslint/parser": "^5.55.0",
+		"@vitest/coverage-c8": "^0.29.5",
+		"c8": "^7.13.0",
+		"eslint": "^8.36.0",
+		"eslint-config-prettier": "^8.7.0",
+		"prettier": "^2.8.5",
+		"publint": "^0.1.10",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.2",
+		"vite": "^4.2.1",
+		"vitest": "^0.29.5"
+	},
+	"scripts": {
+		"build": "pnpm test && tsup && pnpm postbuild",
+		"watch": "pnpm build -- --watch src",
+		"format": "prettier --plugin-search-dir=. --write .",
+		"lint": "prettier --plugin-search-dir=. --check . && eslint .",
+		"lint:fix": "prettier --plugin-search-dir=. --check . && eslint --fix .",
+		"postbuild": "pnpm exec publint .",
+		"postinstall": "git config core.hooksPath .githooks",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest watch"
+	},
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"exports": {
+		"./collections": {
+			"types": "./dist/collections/index.d.ts",
+			"import": "./dist/collections/index.js",
+			"require": "./dist/collections/index.cjs"
+		},
+		"./dates": {
+			"types": "./dist/dates/index.d.ts",
+			"import": "./dist/dates/index.js",
+			"require": "./dist/dates/index.cjs"
+		},
+		"./strings": {
+			"types": "./dist/strings/index.d.ts",
+			"import": "./dist/strings/index.js",
+			"require": "./dist/strings/index.cjs"
+		},
+		"./urls": {
+			"types": "./dist/urls/index.d.ts",
+			"import": "./dist/urls/index.js",
+			"require": "./dist/urls/index.cjs"
+		},
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"typesVersions": {
+		">4.0": {
+			"collections": [
+				"./dist/collections/index.d.ts"
+			],
+			"dates": [
+				"./dist/dates/index.d.ts"
+			],
+			"strings": [
+				"./dist/strings/index.d.ts"
+			],
+			"urls": [
+				"./dist/urls/index.d.ts"
+			],
+			"index": [
+				"./dist/index.d.ts"
+			]
+		}
+	}
+}
