@@ -1,4 +1,9 @@
+import { DEV } from 'esm-env';
 import { isEmpty } from '../index.js';
+
+export function getBaseURL(devBase: string, prodBase: string): string {
+	return DEV ? devBase : prodBase;
+}
 
 /**
  * It takes a base URL and a pathname and returns a canonical URL.

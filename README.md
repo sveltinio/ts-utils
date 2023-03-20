@@ -54,6 +54,7 @@ yarn add -D @sveltinio/ts-utils
 
 | Name           | Description                                                                      |
 |:-------------- |:-------------------------------------------------------------------------------- |
+| `getBaseURL`   | Returns a valid url based on the environment information (DEV or !DEV)           |
 | `canonicalURL` | Given a base URL and a pathname, returns a canonical URL.                        |
 | `makeImagePath`| Makes the full qualified path to the image file.                                 |
 | `defaultImage` | Makes the full qualified path to the default (images/logos/logo.png) image file. |

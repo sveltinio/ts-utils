@@ -10,6 +10,7 @@ specifiers:
   c8: ^7.13.0
   eslint: ^8.36.0
   eslint-config-prettier: ^8.7.0
+  esm-env: ^1.0.0
   prettier: ^2.8.5
   publint: ^0.1.10
   release-it: ^15.9.0
@@ -28,6 +29,7 @@ devDependencies:
   c8: 7.13.0
   eslint: 8.36.0
   eslint-config-prettier: 8.7.0_eslint@8.36.0
+  esm-env: 1.0.0
   prettier: 2.8.5
   publint: 0.1.10
   release-it: 15.9.0
@@ -1838,6 +1840,10 @@ packages:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /esm-env/1.0.0:
+    resolution: {integrity: sha512-Cf6VksWPsTuW01vU9Mk/3vRue91Zevka5SjyNf3nEpokFRuqt/KjUQoGAwq9qMmhpLTHmXzSIrFRw8zxWzmFBA==}
     dev: true
 
   /espree/9.5.0:
