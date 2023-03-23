@@ -1,5 +1,6 @@
 import { DEV } from 'esm-env';
 import { isEmpty } from '../index.js';
+import { textBetween } from '../strings/index.js';
 
 export function getBaseURL(devBase: string, prodBase: string): string {
 	return DEV ? devBase : prodBase;
@@ -34,19 +35,28 @@ export function defaultImage(
 	return _makePathToImageFile(baseURL, folder, filename);
 }
 
+export type artifactType = '' | 'pages' | 'resources';
+
 /**
  * It returns the image URL for a page, or a default image if the page doesn't have an image.
  *
  * @param baseURL - string - The base URL of the site.
- * @param type - string - `''` The type of image you want to get. This can be '', 'pages' or 'resources'.
+ * @param artifact - artifactType - `''`, The type of image you want to get. '' | 'pages' | 'resources'.
  * @param pathname - string - The path to the page, e.g. /welcome
  * @param filename - string - The name of the image file.
  *
  * @returns A string representing the full qualified path to the image file
  */
-export function makeImagePath(baseURL: string, type = '', pathname: string, filename: string) {
+export function makeImagePath(
+	baseURL: string,
+	artifact: artifactType = '',
+	pathname: string,
+	filename: string
+) {
 	if (filename && !isEmpty(filename)) {
-		const folder = type != '' ? type.concat('/', pathname) : pathname;
+		const cleanedPath = textBetween(pathname, '/', '/');
+
+		const folder = artifact != '' ? artifact.concat('/', cleanedPath) : cleanedPath;
 		return _makePathToImageFile(baseURL, folder, filename);
 	}
 	return defaultImage(baseURL);

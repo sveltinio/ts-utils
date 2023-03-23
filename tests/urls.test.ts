@@ -36,8 +36,13 @@ describe('makeImagePath', () => {
 		expect(imagePath).toBe('/pages/about/cover.png');
 	});
 
-	it('should be a path to an image file located in pages folder', () => {
+	it('should be a path to an image file located in resources folder', () => {
 		const imagePath = makeImagePath('   ', 'resources', 'posts/welcome', 'cover.png');
+		expect(imagePath).toBe('/resources/posts/welcome/cover.png');
+	});
+
+	it('should be a path to an image file located in resources folder starting from a pathname with slashes', () => {
+		const imagePath = makeImagePath('   ', 'resources', '/posts/welcome/', 'cover.png');
 		expect(imagePath).toBe('/resources/posts/welcome/cover.png');
 	});
 });
