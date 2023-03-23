@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * Remove all trailing slashes from a string.
  *
@@ -92,4 +93,60 @@ export function toSlug(str: string): string {
 		.toLowerCase()
 		.replace(/[^\w ]+/g, '')
 		.replace(/ +/g, '-');
+}
+
+/**
+ * It takes a string, a char as start delimiter and one as end delimiter, and return the substring enclosed between startsWith and endsWith chars.
+ *
+ * @param text - string - The input string.
+ * @param startsWith - string - The char at the beginning of the string.
+ * @param endsWith - string - The char at the end of the string.
+ *
+ * @returns The trimmed string between startesWith and endsWith chars.
+ *
+ *  @example
+ * ```
+ * // Prints "blog/posts/welcome":
+ * textBetween("/blog/posts/welcome/", "/", "/");
+ * ```
+ */
+export function textBetween(text: string, startsWith: string, endsWith: string) {
+	const regex = new RegExp(`${_escape(startsWith)}(.*)${_escape(endsWith)}+$`);
+	const result = text.match(regex);
+
+	return result ? result[1].trim() : text;
+}
+
+// --------------------------------------------------------------------------------------
+
+// Escape special characters [ \ ^ $ . | ? * + ( )
+function _escape(value: string): string {
+	switch (value) {
+		case '[':
+			return '[';
+		case ']':
+			return ']';
+		case '/':
+			return '/';
+		case '^':
+			return '^';
+		case '$':
+			return '$';
+		case '.':
+			return '.';
+		case '|':
+			return '|';
+		case '?':
+			return '?';
+		case '*':
+			return '*';
+		case '+':
+			return '+';
+		case '(':
+			return '(';
+		case ')':
+			return ')';
+		default:
+			return value;
+	}
 }

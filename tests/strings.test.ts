@@ -4,7 +4,8 @@ import {
 	capitalizeAll,
 	toTitle,
 	toSlug,
-	removeTrailingSlash
+	removeTrailingSlash,
+	textBetween
 } from '../src/strings';
 
 describe('capitalizeFirstLetter', () => {
@@ -91,5 +92,28 @@ describe('removeTrailingSlash', () => {
 
 		const result = removeTrailingSlash(text);
 		expect(result).toBe('http://example.com/about');
+	});
+});
+
+describe('textBetween', () => {
+	it('should be contact', () => {
+		const text = '/contact/';
+
+		const result = textBetween(text, '/', '/');
+		expect(result).toBe('contact');
+	});
+
+	it('should be ts/welcom', () => {
+		const text = 'more than happy.';
+
+		const result = textBetween(text, 'more', '.');
+		expect(result).toBe('than happy');
+	});
+
+	it('should be posts/welcome', () => {
+		const text = '/posts/welcome/';
+
+		const result = textBetween(text, '/', '/');
+		expect(result).toBe('posts/welcome');
 	});
 });

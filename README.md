@@ -47,6 +47,7 @@ yarn add -D @sveltinio/ts-utils
 | `capitalizeFirstLetter` | Capitalizes first letter of the string and lowercase the rest.        |
 | `capitalizeAll`         | Capitalizes first letters of each word in a string.                   |
 | `removeTrailingSlash`   | Removes all trailing slashes from a string.                           |
+| `textBetween`           | Returns the substring between start and end delimiters.               |
 | `toSlug`                | Removes all non-word characters, and replaces all spaces with dashes. |
 | `toTitle`               | Replaces all dashes with spaces, and capitalizes all words.           |
 
