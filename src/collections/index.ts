@@ -1,5 +1,7 @@
 import { isEmpty } from '../index.js';
 
+export type sortOrder = 'asc' | 'desc';
+
 /**
  * It takes a collection, an iteratee, and an order, and returns a sorted collection by the iteratee.
  *
@@ -13,7 +15,7 @@ import { isEmpty } from '../index.js';
 export function orderBy<T extends Record<PropertyKey, any>>(
 	collection: Array<T>,
 	iteratee: string,
-	order = 'asc'
+	order: sortOrder = 'asc'
 ): Array<T> {
 	if (collection == null || isEmpty(collection)) return [];
 
