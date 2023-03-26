@@ -75,16 +75,16 @@ export function groupedByOne<T extends Record<PropertyKey, any>>(
 			return acc && acc[prop];
 		}, elem as any);
 
-		if (props != undefined) {
-			if (!(props in obj)) {
-				obj[props] = { name: props, items: [] };
-				grouped.push(obj[props]);
-			}
+		if (typeof props === 'undefined') return Array<T>();
 
-			const result = makeResultObj(elem, filteredProps, destruct);
-
-			obj[props].items.push(result);
+		if (!(props in obj)) {
+			obj[props] = { name: props, items: [] };
+			grouped.push(obj[props]);
 		}
+
+		const result = makeResultObj(elem, filteredProps, destruct);
+
+		obj[props].items.push(result);
 	});
 
 	return grouped;
@@ -122,7 +122,9 @@ export function groupedByMany<T extends Record<PropertyKey, any>>(
 			return propsAccumulator && propsAccumulator[currProp];
 		}, curr as any);
 
-		props.forEach((prop: any) => {
+		if (typeof props === 'undefined') return Array<T>();
+
+		Array.from(props).forEach((prop: any) => {
 			let result: Record<string, any> = {};
 			if (prop != undefined) {
 				if (!(prop in curr)) {
