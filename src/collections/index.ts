@@ -13,30 +13,29 @@ export type sortOrder = 'asc' | 'desc';
  * @returns an array of objects sorted by the iteratee property.
  */
 export function orderBy<T extends Record<PropertyKey, any>>(
-	collection: Array<T>,
+	collection: T[],
 	iteratee: string,
 	order: sortOrder = 'asc'
-): Array<T> {
+): T[] {
 	if (collection == null || isEmpty(collection)) return [];
 
-	const sort = (iteratee: string, arr: Array<T>) => {
+	const sort = (iteratee: string, arr: T[]) => {
 		const propsArray = iteratee.split('.');
-		if (propsArray != undefined) {
-			arr.sort(function (a: any, b: any) {
-				propsArray.map((prop: string) => {
-					if (!(prop in a && prop in b)) {
-						throw new Error(`${iteratee} is not a property of the object!`);
-					}
-					a = a[prop];
-					b = b[prop];
-				});
-				const res = a > b ? 1 : a < b ? -1 : 0;
-				return order === 'asc' ? res : order === 'desc' ? res * -1 : res;
-			});
-			return arr;
-		}
 
-		return [];
+		if (typeof propsArray === 'undefined') return [];
+
+		arr.sort(function (a: any, b: any) {
+			propsArray.map((prop: string) => {
+				if (!(prop in a && prop in b)) {
+					throw new Error(`${iteratee} is not a property of the object!`);
+				}
+				a = a[prop];
+				b = b[prop];
+			});
+			const res = a > b ? 1 : a < b ? -1 : 0;
+			return order === 'asc' ? res : order === 'desc' ? res * -1 : res;
+		});
+		return arr;
 	};
 
 	return sort(iteratee, collection);
@@ -48,25 +47,25 @@ export function orderBy<T extends Record<PropertyKey, any>>(
  *
  * @param property - string - The property to group by. It can be a dot notation path.
  * @param collection - The array of objects to be grouped.
- * @param filteredProps - Array<string> = [] - The object properties you want back. Default, all.
+ * @param filteredProps - string[] = [] - The object properties you want back. Default, all.
  * @param destruct - boolean - `true` - if true, the function will return a new object with only the
  * properties specified in the filteredProps array.
  *
  * @returns An array of objects with the following structure:
  * \{
  * 	name: string,
- * 	items: Array<any>
+ * 	items: any[]
  * \}
  */
 export function groupedByOne<T extends Record<PropertyKey, any>>(
 	property: string,
-	collection: Array<T>,
-	filteredProps: Array<string> = [],
+	collection: T[],
+	filteredProps: string[] = [],
 	destruct = true
-): Array<Record<PropertyKey, any>> {
-	if (collection == null || isEmpty(collection)) return Array<T>();
+): Record<PropertyKey, any>[] {
+	if (collection == null || isEmpty(collection)) return [];
 
-	const grouped: Array<T> = [];
+	const grouped: T[] = [];
 	const obj: any = {};
 	const propsArray = property.split('.');
 
@@ -75,7 +74,7 @@ export function groupedByOne<T extends Record<PropertyKey, any>>(
 			return acc && acc[prop];
 		}, elem as any);
 
-		if (typeof props === 'undefined') return Array<T>();
+		if (typeof props === 'undefined') return [];
 
 		if (!(props in obj)) {
 			obj[props] = { name: props, items: [] };
@@ -97,23 +96,23 @@ export function groupedByOne<T extends Record<PropertyKey, any>>(
  *
  * @param property - The property to group by. It can be a dot notation path.
  * @param collection - The array of objects to be grouped.
- * @param filteredProps - Array<string> = []. The object properties you want back. Default, all.
+ * @param filteredProps - string[] = []. The object properties you want back. Default, all.
  * @param destruct - boolean - `true` - if true, the function will return a new object with only the
  * properties specified in the filteredProps array.
  *
  * @returns An array of objects with the following structure:
  * \{
  * 	name: string,
- * 	items: Array<any>
+ * 	items: any[]
  * \}
  */
 export function groupedByMany<T extends Record<PropertyKey, any>>(
 	property: string,
-	collection: Array<T>,
-	filteredProps: Array<string> = [],
+	collection: T[],
+	filteredProps: string[] = [],
 	destruct = true
-): Array<Record<PropertyKey, any>> {
-	if (collection == null || isEmpty(collection)) return Array<T>();
+): Record<PropertyKey, any>[] {
+	if (collection == null || isEmpty(collection)) return [];
 
 	const propsArray = property.split('.');
 
@@ -122,14 +121,12 @@ export function groupedByMany<T extends Record<PropertyKey, any>>(
 			return propsAccumulator && propsAccumulator[currProp];
 		}, curr as any);
 
-		if (typeof props === 'undefined') return Array<T>();
+		if (typeof props === 'undefined') return [];
 
 		Array.from(props).forEach((prop: any) => {
 			let result: Record<string, any> = {};
-			if (prop != undefined) {
-				if (!(prop in curr)) {
-					result = makeResultObj(curr, filteredProps, destruct);
-				}
+			if (typeof prop !== 'undefined' && !(prop in curr)) {
+				result = makeResultObj(curr, filteredProps, destruct);
 			}
 
 			if (acc[prop]) {
@@ -152,14 +149,14 @@ export function groupedByMany<T extends Record<PropertyKey, any>>(
  * specified in the array.
  *
  * @param originalObj - The original object that you want to filter.
- * @param filteredProps - Array<string> = []. The object properties you want back. Default, all.
+ * @param filteredProps - string[] = []. The object properties you want back. Default, all.
  * @param destruct - boolean - If true, the function will return a destructed object otherwise the original object structure will be preserved.
  *
  * @returns A function that takes in an object, an array of strings, and a boolean.
  */
 function makeResultObj(
 	originalObj: Record<string, any>,
-	filteredProps: Array<string>,
+	filteredProps: string[],
 	destruct: boolean
 ): Record<PropertyKey, any> {
 	let result: Record<PropertyKey, any> = {};
@@ -189,7 +186,7 @@ function makeResultObj(
  */
 function destructObj(
 	originalObj: Record<PropertyKey, any>,
-	props: Array<string>
+	props: string[]
 ): Record<PropertyKey, any> {
 	return props.reduce((obj, prop) => {
 		const selectors = prop.split('.');
@@ -212,7 +209,7 @@ function destructObj(
  */
 function asIsObjStructure(
 	originalObj: Record<PropertyKey, any>,
-	props: Array<string>
+	props: string[]
 ): Record<PropertyKey, any> {
 	return props.reduce((resultObj: Record<PropertyKey, any>, currentProp: string) => {
 		if (!currentProp.includes('.')) {
@@ -249,7 +246,7 @@ function asIsObjStructure(
  *
  * @returns An array of values from the object.
  */
-function getPropValue(from: Record<PropertyKey, any>, ...selectors: Array<string>) {
+function getPropValue(from: Record<PropertyKey, any>, ...selectors: string[]) {
 	return [...selectors].map((s) =>
 		s
 			.replace(/\[([^[\]]*)\]/g, '.$1.')
