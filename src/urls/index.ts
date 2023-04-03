@@ -1,6 +1,7 @@
 import { DEV } from 'esm-env';
 import { isEmpty } from '../index.js';
 import { textBetween } from '../strings/index.js';
+import { ok, err, Ok, Err } from 'neverthrow';
 
 export function getBaseURL(devBase: string, prodBase: string): string {
 	return DEV ? devBase : prodBase;
@@ -35,6 +36,23 @@ export function defaultImage(
 	return _makePathToImageFile(baseURL, folder, filename);
 }
 
+/**
+ * It returns the path to the default image used for socials sharings.
+ *
+ * @param baseURL - string - The base URL of the site.
+ * @param folder - string - `images` - the folder where the image is located.
+ * @param filename - string - `socials.png` - The name of the image file
+ *
+ * @returns A string representing the full qualified path to the default image file for socials sharings.
+ */
+export function defaultSocialImage(
+	baseURL: string,
+	folder = 'images',
+	filename = 'socials.png'
+): string {
+	return _makePathToImageFile(baseURL, folder, filename);
+}
+
 export type artifactType = '' | 'pages' | 'resources';
 
 /**
@@ -62,6 +80,57 @@ export function makeImagePath(
 	return defaultImage(baseURL);
 }
 
+/**
+ * This function takes a URL, and returns a string that is the parent url
+ * without the last segment of the it.
+ *
+ * @param url - string - The base URL of the website.
+ *
+ * @returns A string representing the parent url of the given URL.
+ *
+ * @example
+ * ```
+ *  // Prints "https://example.com/blog/posts":
+ * parentUrl("https://example.com/blog/posts/welcome/").value
+ *
+ * ```
+ */
+export function parentUrl(url: string): Err<never, Error> | Ok<string, never> {
+	if (!_isUrl(url)) {
+		return err(new Error('Expected a valid URL'));
+	} else {
+		const result = new URL(url).href.substring(0, new URL(url).href.lastIndexOf('/'));
+		return ok(result);
+	}
+}
+
+/**
+ * This function takes a URL, and returns a string that is the pathname
+ * without the last segment of the it.
+ *
+ * @param url - string - The base URL of the website.
+ *
+ * @returns A string representing the parent pathname of the given URL.
+ *
+ * @example
+ * ```
+ *  // Prints "blog/posts":
+ * parentPathname("https://example.com/blog/posts/welcome/").value
+ *
+ * ```
+ */
+export function parentPathname(url: string): Err<never, Error> | Ok<string, never> {
+	if (!_isUrl(url)) {
+		return err(new Error('Expected a valid URL'));
+	} else {
+		const path = new URL(url).pathname.split('/');
+		const noEmptySegments = path.filter((s: string) => s !== '');
+
+		noEmptySegments.pop(); // remove the last
+		return ok(noEmptySegments.join('/'));
+	}
+}
+
 // --------------------------------------------------------------------------------------
 
 /**
@@ -82,4 +151,13 @@ function _trim(value: string): string {
 	let base = value.trim();
 	if (base === '/') base = '';
 	return base;
+}
+
+function _isUrl(url: string): boolean {
+	try {
+		new URL(url);
+		return true;
+	} catch (err) {
+		return false;
+	}
 }

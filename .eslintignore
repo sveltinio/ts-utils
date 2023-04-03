@@ -10,3 +10,6 @@ coverage/**
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+tsup.config.ts
+vitest.config.ts
+tests/**
