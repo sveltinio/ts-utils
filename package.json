@@ -1,6 +1,6 @@
 {
 	"name": "@sveltinio/ts-utils",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"packageManager": "pnpm@8.2.0",
 	"description": "A bunch of utilities in Typescript used by Sveltin based projects to deal with strings, urls, collections and dates.",
 	"author": "sveltinio <dev@sveltin.io>",
