@@ -51,7 +51,6 @@
 		"lint": "prettier --plugin-search-dir=. --check . && eslint .",
 		"lint:fix": "prettier --plugin-search-dir=. --check . && eslint --fix .",
 		"postbuild": "pnpm exec publint .",
-		"postinstall": "git config core.hooksPath .githooks",
 		"prepare": "pnpm format && pnpm lint",
 		"release": "pnpm build && pnpm exec release-it",
 		"release:dryRun": "pnpm build && pnpm exec release-it --dry-run",
