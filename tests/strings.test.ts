@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
-	capitalizeFirstLetter,
+	capitalize,
+	uppercase,
+	lowercase,
 	capitalizeAll,
 	toTitle,
 	toSlug,
@@ -8,19 +10,51 @@ import {
 	textBetween
 } from '../src/strings';
 
-describe('capitalizeFirstLetter', () => {
+describe('capitalize', () => {
 	it('should be Welcome', () => {
 		const text = 'welcome';
 
-		const result = capitalizeFirstLetter(text);
+		const result = capitalize(text);
 		expect(result).toBe('Welcome');
 	});
 
 	it('should be Getting started', () => {
 		const text = 'getting started';
 
-		const result = capitalizeFirstLetter(text);
+		const result = capitalize(text);
 		expect(result).toBe('Getting started');
+	});
+});
+
+describe('uppercase', () => {
+	it('should be WELCOME', () => {
+		const text = 'welcome';
+
+		const result = uppercase(text);
+		expect(result).toBe('WELCOME');
+	});
+
+	it('should be GETTING STARTED', () => {
+		const text = 'getting started';
+
+		const result = uppercase(text);
+		expect(result).toBe('GETTING STARTED');
+	});
+});
+
+describe('lowercase', () => {
+	it('should be welcome', () => {
+		const text = 'Welcome';
+
+		const result = lowercase(text);
+		expect(result).toBe('welcome');
+	});
+
+	it('should be getting started', () => {
+		const text = 'GETTING STARTED';
+
+		const result = lowercase(text);
+		expect(result).toBe('getting started');
 	});
 });
 

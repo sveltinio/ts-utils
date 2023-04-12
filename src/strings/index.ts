@@ -26,11 +26,45 @@ export function removeTrailingSlash(str: string): string {
  * @example
  * ```
  * // Prints "Example":
- * capitalizeFirstLetter("example");
+ * capitalize("example");
  * ```
  */
-export function capitalizeFirstLetter(str: string): string {
+export function capitalize(str: string): string {
 	return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
+}
+
+/**
+ * uppercase.
+ *
+ * @param str - string - The string to uppercase.
+ *
+ * @returns The uppercased string.
+ *
+ * @example
+ * ```
+ * // Prints "EXAMPLE":
+ * uppercase("example");
+ * ```
+ */
+export function uppercase(str: string): string {
+	return str.toUpperCase();
+}
+
+/**
+ * lowercase.
+ *
+ * @param str - string - The string to lowecase.
+ *
+ * @returns The lowercased string.
+ *
+ * @example
+ * ```
+ * // Prints "example":
+ * uppercase("Example");
+ * ```
+ */
+export function lowercase(str: string): string {
+	return str.toLocaleLowerCase();
 }
 
 /**
@@ -52,7 +86,7 @@ export function capitalizeAll(str: string): string {
 	const capitalized: Array<string> = [];
 
 	splitted.forEach(function (item) {
-		capitalized.push(capitalizeFirstLetter(item));
+		capitalized.push(capitalize(item));
 	});
 	return capitalized.join(' ');
 }
