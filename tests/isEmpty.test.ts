@@ -1,37 +1,42 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { isEmpty } from '../src/index.js';
 
 describe('isEmpty', () => {
-	it('should be true for null value', () => {
+	test('null and undefined', () => {
 		expect(isEmpty(null)).toBe(true);
+		expect(isEmpty(undefined)).toBe(true);
 	});
 
-	it('should be true for undefined', () => {
-		let b: undefined;
-		expect(isEmpty(b)).toBe(true);
+	test('booleans', () => {
+		expect(isEmpty(true)).toBe(true);
+		expect(isEmpty(false)).toBe(false);
 	});
 
-	it('should be true for empty string', () => {
+	test('numbers', () => {
+		expect(isEmpty(0)).toBe(false);
+		expect(isEmpty(124)).toBe(false);
+	});
+
+	test('strings', () => {
 		expect(isEmpty('')).toBe(true);
-	});
-
-	it('should be false for not empty string', () => {
 		expect(isEmpty('message')).toBe(false);
 	});
 
-	it('should be true for empty array', () => {
+	test('arrays', () => {
 		expect(isEmpty([])).toBe(true);
-	});
-
-	it('should be false for not empty array', () => {
 		expect(isEmpty(['apple', 'banana'])).toBe(false);
+		expect(isEmpty([1, 2, 3])).toBe(false);
 	});
 
-	it('should be true for empty object', () => {
+	test('objects', () => {
 		expect(isEmpty({})).toBe(true);
+		expect(isEmpty({ message: 'hello' })).toBe(false);
 	});
 
-	it('should be false for not empty object', () => {
-		expect(isEmpty({ message: 'hello' })).toBe(false);
+	test('functions and symbols', () => {
+		expect(isEmpty(function () {})).toBe(true);
+		expect(isEmpty(Symbol())).toBe(true);
+		expect(isEmpty(Symbol('x'))).toBe(false);
+		expect(isEmpty(/./)).toBe(true);
 	});
 });

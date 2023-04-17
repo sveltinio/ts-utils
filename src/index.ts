@@ -5,21 +5,28 @@
  *
  * @returns a boolean representing if the given value is empty or not.
  */
-export function isEmpty<T extends boolean | number | string | any[] | object | undefined | null>(
-	value: T
-): boolean {
-	if (value == null) {
+export function isEmpty<
+	T extends boolean | number | string | [] | object | symbol | undefined | null
+>(value: T): boolean {
+	if (value === null || value === undefined) {
 		return true;
 	}
 	switch (typeof value) {
-		case 'undefined':
-			return true;
 		case 'boolean':
-			return value === undefined || value === null || Number.isNaN(value);
+			return Boolean(value);
+		case 'number':
+			return Number.isNaN(value);
 		case 'string':
 			return !value;
 		case 'object':
-			return Object.keys(value).length === 0;
+			if (value.constructor === Object) {
+				return Object.keys(value).length === 0;
+			} else if (value.constructor === Array) {
+				return value.length === 0;
+			}
+			return true;
+		case 'symbol':
+			return value.toString() === 'Symbol()';
 		default:
 			return true;
 	}
