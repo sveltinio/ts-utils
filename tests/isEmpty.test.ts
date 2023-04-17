@@ -2,6 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { isEmpty } from '../src/index.js';
 
 describe('isEmpty', () => {
+	it('should be true for null value', () => {
+		expect(isEmpty(null)).toBe(true);
+	});
+
+	it('should be true for undefined', () => {
+		let b: undefined;
+		expect(isEmpty(b)).toBe(true);
+	});
+
 	it('should be true for empty string', () => {
 		expect(isEmpty('')).toBe(true);
 	});
