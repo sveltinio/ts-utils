@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { orderBy, groupedByOne, groupedByMany } from '../src/collections';
+import { describe, it, expect, expectTypeOf } from 'vitest';
+import { orderBy, groupedByOne, groupedByMany, pickRandom, contains } from '../src/collections';
 import { menu, people, posts } from './data.js';
 
 describe('orderBy', () => {
@@ -118,5 +118,39 @@ describe('groupedByMany', () => {
 	it('should have tag_1 as first group name', () => {
 		const res = groupedByMany('meta.tags', posts);
 		expect(res[0].name).toBe('tag_1');
+	});
+});
+
+describe('pickRandom', () => {
+	it('should work for strings array', () => {
+		const data = ['apple', 'banana', 'orange'];
+		expectTypeOf(pickRandom(data)).toEqualTypeOf('pear');
+	});
+
+	it('should work for number array', () => {
+		const data = [10, 20, 25];
+		expectTypeOf(pickRandom(data)).toEqualTypeOf(12);
+	});
+
+	it('should work for booleans array', () => {
+		const data = [true, true, false, true];
+		expectTypeOf(pickRandom(data)).toEqualTypeOf(false);
+	});
+
+	it('should not be equal to string', () => {
+		const data = [true, true, false, true];
+		expectTypeOf(pickRandom(data)).not.toEqualTypeOf(10);
+	});
+});
+
+describe('contains', () => {
+	it('should be true', () => {
+		expect(contains([1, 2, 3], 3)).toBe(true);
+		expect(contains(['one', 'two', 'four'], 'two')).toBe(true);
+	});
+
+	it('should be false', () => {
+		expect(contains([1, 2, 3], 4)).toBe(false);
+		expect(contains(['one', 'two', 'four'], 'five')).toBe(false);
 	});
 });

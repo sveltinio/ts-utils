@@ -142,6 +142,40 @@ export function groupedByMany<T extends Record<PropertyKey, any>>(
 	return grouped.map(([name, items]) => ({ name, items }));
 }
 
+/**
+ * The function picks a random value from an array of numbers, strings, or booleans.
+ *
+ * @param {T[]} values - An array of values of type number, string, or boolean from which a random
+ * value will be picked.
+ *
+ * @returns The function `pickRandom` returns a random element of the input array `values`. The
+ * type of the returned value is the same as the type of the elements in the input array, which can
+ * be `number`, `string`, or `boolean`.
+ */
+export function pickRandom<T extends number | string | boolean>(values: T[]): T {
+	return values[Math.floor(Math.random() * values.length)];
+}
+
+/**
+ * The function checks if a given string is a valid keyword by ensuring it is not
+ * empty and does not contain any reserved names.
+ *
+ * @param {string} kw - A string representing a keyword to be validated for correctness.
+
+ * @param reserved - An array of strings representing reserved keywords.
+ *
+ * @returns A boolean value indicating whether the input `kw` is a valid class name or not,
+ * based on the following conditions:
+ * - The input `kw` is not an empty string.
+ * - The input `kw` does not include any of the reserved keywords
+ * .
+ * The function returns `true` if the input `kw` satisfies these conditions, `false` otherwise.
+ */
+export function contains<T extends number | string>(collection: T[], value: T): boolean {
+	const tmpRes = Array.from(collection).includes(value);
+	return typeof value == 'number' ? tmpRes : !isEmpty(value) && tmpRes;
+}
+
 // --------------------------------------------------------------------------------------
 
 /**
