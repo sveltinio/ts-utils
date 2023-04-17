@@ -75,6 +75,11 @@
 			"import": "./dist/dates/index.js",
 			"require": "./dist/dates/index.cjs"
 		},
+		"./objects": {
+			"types": "./dist/objects/index.d.ts",
+			"import": "./dist/objects/index.js",
+			"require": "./dist/objects/index.cjs"
+		},
 		"./strings": {
 			"types": "./dist/strings/index.d.ts",
 			"import": "./dist/strings/index.js",
@@ -98,6 +103,9 @@
 			],
 			"dates": [
 				"./dist/dates/index.d.ts"
+			],
+			"objects": [
+				"./dist/objects/index.d.ts"
 			],
 			"strings": [
 				"./dist/strings/index.d.ts"
