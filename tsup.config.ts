@@ -7,6 +7,7 @@ export default defineConfig({
 		'src/collections/index.ts',
 		'src/dates/index.ts',
 		'src/objects/index.ts',
+		'src/paths/index.ts',
 		'src/urls/index.ts',
 		'src/strings/index.ts'
 	],

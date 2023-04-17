@@ -80,6 +80,11 @@
 			"import": "./dist/objects/index.js",
 			"require": "./dist/objects/index.cjs"
 		},
+		"./paths": {
+			"types": "./dist/paths/index.d.ts",
+			"import": "./dist/paths/index.js",
+			"require": "./dist/paths/index.cjs"
+		},
 		"./strings": {
 			"types": "./dist/strings/index.d.ts",
 			"import": "./dist/strings/index.js",
@@ -106,6 +111,9 @@
 			],
 			"objects": [
 				"./dist/objects/index.d.ts"
+			],
+			"paths": [
+				"./dist/paths/index.d.ts"
 			],
 			"strings": [
 				"./dist/strings/index.d.ts"
