@@ -21,7 +21,6 @@
 		"dates"
 	],
 	"dependencies": {
-		"esm-env": "^1.0.0",
 		"neverthrow": "^6.0.0"
 	},
 	"devDependencies": {
@@ -52,8 +51,8 @@
 		"lint:fix": "prettier --plugin-search-dir=. --check . && eslint --fix .",
 		"postbuild": "pnpm exec publint .",
 		"prepare": "pnpm format && pnpm lint",
-		"release": "pnpm build && pnpm exec release-it",
-		"release:dryRun": "pnpm build && pnpm exec release-it --dry-run",
+		"release": "pnpm exec release-it",
+		"release:dryRun": "pnpm exec release-it --dry-run",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest watch"
