@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { padTo2Digits, dayOfMonthFromDate, monthShortFromDate, formatDate } from '../src/dates';
+import {
+	padTo2Digits,
+	dayOfMonthFromDate,
+	monthShortFromDate,
+	formatDate,
+	formatDateISO
+} from '../src/dates';
 
 describe('padTo2Digits', () => {
 	it('should be 08 as string', () => {
@@ -44,5 +50,17 @@ describe('formatDate', () => {
 	it('should be 01/01/2023', () => {
 		const date = new Date(2023, 0, 1);
 		expect(formatDate(date)).toBe('01/01/2023');
+	});
+});
+
+describe('formatDateISO', () => {
+	it('should be 2023-04-17', () => {
+		const date = new Date('2023-04-17T03:24:00');
+		expect(formatDateISO(date)).toBe('2023-04-17');
+	});
+
+	it('should be 2023-04-17', () => {
+		const date = new Date(2023, 3, 17);
+		expect(formatDateISO(date)).toBe('2023-04-17');
 	});
 });

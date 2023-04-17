@@ -26,12 +26,31 @@ export function padTo2Digits(num: number): string {
  * @example
  * ```
  * // Prints "07/03/2023":
- * formatDate(new Date());
+ * formatDate(new Date('2023-03-07T03:24:00'));
  * ```
  */
-export function formatDate(date: Date) {
+export function formatDate(date: Date): string {
 	return [padTo2Digits(date.getDate()), padTo2Digits(date.getMonth() + 1), date.getFullYear()].join(
 		'/'
+	);
+}
+
+/**
+ * The function formats a given date object into an ISO string format.
+ *
+ * @param {Date} date - The input parameter of type Date that represents the date to be formatted.
+ *
+ * @returns A string representing the date in ISO format (YYYY-MM-DD).
+ *
+ *  @example
+ * ```
+ * // Prints "2023-04-17":
+ * formatDate(new Date(2023, 3, 17));
+ * ```
+ */
+export function formatDateISO(date: Date): string {
+	return [date.getFullYear(), padTo2Digits(date.getMonth() + 1), padTo2Digits(date.getDate())].join(
+		'-'
 	);
 }
 
