@@ -8,7 +8,14 @@ import {
 	toTitle,
 	toSlug,
 	removeTrailingSlash,
-	textBetween
+	textBetween,
+	isHex,
+	getHexValue,
+	toKebabCase,
+	toSnakeCase,
+	removeFirstOccurrence,
+	isCommaSepareted,
+	toCommaSepareted
 } from '../src/strings';
 
 describe('capitalize', () => {
@@ -206,5 +213,100 @@ describe('textBetween', () => {
 		const result = textBetween(text, '^', '.');
 
 		expect(result).toBe('music=zap');
+	});
+});
+
+describe('hex colors ', () => {
+	it('should be a valid hex color', async () => {
+		expect(isHex('#ff0000')).toBe(true);
+		expect(isHex('#fff')).toBe(true);
+	});
+
+	it('should be an invalid hex color', async () => {
+		expect(isHex('ff0000')).toBe(false);
+	});
+
+	it('should give me back the hex string from a valid hex color string', async () => {
+		const hex = getHexValue('#ff0000') as Ok<string, never>;
+		expect(hex.value).toBe('ff0000');
+	});
+
+	it('should give me back Expected a valid hex string from a invalid hex color string', async () => {
+		const hex = getHexValue('ff0000') as Err<never, Error>;
+		expect(hex.error.message).toBe('Expected a valid hex string');
+	});
+});
+
+describe('toKebabCase ', () => {
+	it('should be a valid kebabCase format', async () => {
+		expect(toKebabCase('borderColor')).toBe('border-color');
+		expect(toKebabCase('gettingStarted')).toBe('getting-started');
+		expect(toKebabCase('tabLinkColor')).toBe('tab-link-color');
+	});
+
+	it('should not be a valid kebabCase format', async () => {
+		expect(toKebabCase('borderColor')).not.toBe('border_color');
+	});
+
+	it('should be as it is', async () => {
+		expect(toKebabCase('bordercolor')).toBe('bordercolor');
+	});
+
+	it('should be as it is because no digits or chars', async () => {
+		expect(toKebabCase('()')).toBe('()');
+	});
+});
+
+describe('toSnakeCase ', () => {
+	it('should be a valid snake_case format', async () => {
+		expect(toSnakeCase('borderColor')).toBe('border_color');
+		expect(toSnakeCase('gettingStarted')).toBe('getting_started');
+		expect(toSnakeCase('tabLinkColor')).toBe('tab_link_color');
+	});
+
+	it('should not be a valid snake_case format', async () => {
+		expect(toSnakeCase('borderColor')).not.toBe('border-color');
+	});
+
+	it('should be as it is', async () => {
+		expect(toSnakeCase('bordercolor')).toBe('bordercolor');
+	});
+
+	it('should be as it is because no digits or chars', async () => {
+		expect(toSnakeCase('()')).toBe('()');
+	});
+});
+
+describe('comma separated list', () => {
+	it('should be a valid comma separted list', async () => {
+		expect(isCommaSepareted('one,')).toBe(true);
+		expect(isCommaSepareted('one, two')).toBe(true);
+		expect(isCommaSepareted('one, two, three')).toBe(true);
+	});
+
+	it('should be a invalid comma separted list', async () => {
+		expect(isCommaSepareted('one')).toBe(false);
+		expect(isCommaSepareted('one two three')).toBe(false);
+	});
+});
+
+describe('to comma separated string', () => {
+	it('should be a valid comma separted list', async () => {
+		expect(toCommaSepareted('one two')).toBe('one,two');
+		expect(toCommaSepareted('one;two')).toBe('one,two');
+	});
+});
+
+describe('remove first Occurrence', () => {
+	it('should return the string without the initial /', async () => {
+		expect(removeFirstOccurrence('/20531316728/posts/10154009990506729/', '/')).toBe(
+			'20531316728/posts/10154009990506729/'
+		);
+	});
+
+	it('should return the string as it is', async () => {
+		expect(removeFirstOccurrence('/20531316728/posts/10154009990506729/', '$')).toBe(
+			'/20531316728/posts/10154009990506729/'
+		);
 	});
 });

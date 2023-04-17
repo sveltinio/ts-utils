@@ -140,6 +140,89 @@ export function toSlug(str: string): string {
 }
 
 /**
+ * The function converts a given string to snake case.
+ *
+ * @param {string} str - The input string that needs to be converted to snake case.
+ *
+ * @returns a string in snake_case format. If the input string contains any uppercase letters, they
+ * are converted to lowercase and separated by underscores. If the input string does not contain any
+ * uppercase letters, it is returned as is.
+ */
+export function toSnakeCase(str: string): string {
+	const regex = /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g;
+	const res = str.match(regex);
+
+	if (res) {
+		return res.map((x) => x.toLowerCase()).join('_');
+	}
+	return str;
+}
+
+/**
+ * The function converts a given string to kebab case format.
+ *
+ * @param {string} str - The input string that needs to be converted to kebab case.
+ *
+ * @returns a string in kebab case format. If the input string contains uppercase letters, they are
+ * converted to lowercase and separated by hyphens. If the input string does not contain any
+ * uppercaseletters, it is returned as is.
+ */
+export function toKebabCase(str: string): string {
+	const regex = /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g;
+	const res = str.match(regex);
+
+	if (res) {
+		return res.map((x) => x.toLowerCase()).join('-');
+	}
+	return str;
+}
+
+/**
+ * The function checks if a given string is a valid hexadecimal color code.
+ *
+ * @param {string} str - The input string that is being checked to see if it is a valid hexadecimal
+ * color code.
+ *
+ * @returns A boolean value is being returned, which indicates whether the input string is a valid
+ * hexadecimal color code or not.
+ */
+export function isHex(str: string): boolean {
+	return /^#([0-9A-F]{3}){1,2}$/i.test(str);
+}
+
+export function getHexValue(str: string): Err<never, Error> | Ok<string, never> {
+	if (isHex(str)) return ok(str.substring(1));
+	return err(new Error('Expected a valid hex string'));
+}
+
+/**
+ * The function checks if a given string contains a comma-separated list.
+ *
+ * @param {string} str - a string that needs to be checked if it is comma-separated or not.
+ *
+ * @returns A boolean value indicating whether the input string contains a comma or not.
+ */
+export function isCommaSepareted(str: string): boolean {
+	return str.indexOf(',') >= 0;
+}
+
+/**
+ * The function takes a string and replaces all whitespace and semicolons with commas to return a
+ * comma-separated string.
+ *
+ * @param {string} str - The `str` parameter is a string that represents a sentence or a list of
+ * items separated by spaces or semicolons. The function `toCommaSeparated` replaces all spaces and
+ * semicolons with commas and returns the modified string.
+ *
+ * @returns A string that replaces all occurrences of whitespace and semicolons in the input string
+ * with commas.
+ */
+export function toCommaSepareted(str: string): string {
+	const re = /\s+|;+/g;
+	return str.replace(re, ',');
+}
+
+/**
  * It takes a string, a char as start delimiter and one as end delimiter, and return the substring enclosed between startsWith and endsWith chars.
  *
  * @param text - string - The input string.
@@ -155,8 +238,30 @@ export function toSlug(str: string): string {
  * ```
  */
 export function textBetween(text: string, startsWith: string, endsWith: string) {
+	/*const regex = new RegExp(`${_escape(startsWith)}(.*)${_escape(endsWith)}+$`);
+	const result = text.match(regex);
+*/
 	const result = text.match(`(?<=${_escape(startsWith)})(.*)(?=${_escape(endsWith)})`);
 	return result ? result[1].trim() : text;
+}
+
+/**
+ * The function removes the first occurrence of a specified string from a given text.
+ * @param {string} text - The original string from which the first occurrence of the search string will
+ * be removed.
+ * @param {string} searchstr - The searchstr parameter is a string that represents the substring that
+ * needs to be removed from the text parameter. The function removes the first occurrence of this
+ * substring from the text parameter.
+ * @returns The function `removeFirstOccurrence` returns a modified version of the `text` string where
+ * the first occurrence of the `searchstr` string has been removed. If the `searchstr` string is not
+ * found in the `text` string, the original `text` string is returned.
+ */
+export function removeFirstOccurrence(text: string, searchstr: string) {
+	const index = text.indexOf(searchstr);
+	if (index === -1) {
+		return text;
+	}
+	return text.slice(0, index) + text.slice(index + searchstr.length);
 }
 
 // --------------------------------------------------------------------------------------
