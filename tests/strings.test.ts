@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { Ok, Err } from 'neverthrow';
 import {
 	capitalize,
 	uppercase,
@@ -88,6 +89,13 @@ describe('toTitle', () => {
 		const result = toTitle(text);
 		expect(result).toBe('Getting Started');
 	});
+
+	it('should be Getting started', () => {
+		const text = 'getting-started';
+
+		const result = toTitle(text, false);
+		expect(result).toBe('Getting started');
+	});
 });
 
 describe('toSlug', () => {
@@ -130,24 +138,73 @@ describe('removeTrailingSlash', () => {
 });
 
 describe('textBetween', () => {
-	it('should be contact', () => {
+	it('should be "contact"', () => {
 		const text = '/contact/';
-
 		const result = textBetween(text, '/', '/');
+
 		expect(result).toBe('contact');
 	});
 
-	it('should be ts/welcom', () => {
+	it('should be "ts/welcom"', () => {
 		const text = 'more than happy.';
-
 		const result = textBetween(text, 'more', '.');
+
 		expect(result).toBe('than happy');
 	});
 
-	it('should be posts/welcome', () => {
+	it('should be "posts/welcome"', () => {
 		const text = '/posts/welcome/';
-
 		const result = textBetween(text, '/', '/');
+
 		expect(result).toBe('posts/welcome');
+	});
+
+	it('should be "(posts)"', () => {
+		const text = '(posts)/welcome/';
+		const result = textBetween(text, '(', ')');
+
+		expect(result).toBe('posts');
+	});
+
+	it('should be "likes and 600"', () => {
+		const text = 'I got 500+ likes and 600* or, if you prefer money it is 1000$';
+		const result = textBetween(text, '+', '*');
+
+		expect(result).toBe('likes and 600');
+	});
+
+	it('should be "if you prefer money it is 1000"', () => {
+		const text = 'I got 500+ likes and 600* or, if you prefer money it is 1000$';
+		const result = textBetween(text, ',', '$');
+
+		expect(result).toBe('if you prefer money it is 1000');
+	});
+
+	it('should be "likes and 600"', () => {
+		const text = 'music&playlist?kc|zap';
+		let result = textBetween(text, '&', '|');
+
+		expect(result).toBe('playlist?kc');
+	});
+
+	it('should be "kc"', () => {
+		const text = 'music&playlist?kc|zap';
+		const result = textBetween(text, '?', '|');
+
+		expect(result).toBe('kc');
+	});
+
+	it('should be "music=zap"', () => {
+		const text = '[music=zap]';
+		const result = textBetween(text, '[', ']');
+
+		expect(result).toBe('music=zap');
+	});
+
+	it('should be "music=zap"', () => {
+		const text = '^music=zap.';
+		const result = textBetween(text, '^', '.');
+
+		expect(result).toBe('music=zap');
 	});
 });

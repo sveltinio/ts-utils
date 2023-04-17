@@ -1,4 +1,7 @@
 /* eslint-disable no-useless-escape */
+
+import { ok, err, Ok, Err } from 'neverthrow';
+
 /**
  * Remove all trailing slashes from a string.
  *
@@ -92,9 +95,12 @@ export function capitalizeAll(str: string): string {
 }
 
 /**
- * It takes a string, replaces all dashes with spaces, and capitalizes all words.
+ * The function takes a string and returns it with the first letter of each word capitalized, with
+ * an option to capitalize all first letters.
  *
- * @param str - string -  The string to be converted.
+ * @param {string} str - a string that you want to convert to title case
+ * @param [capitalizeAllFirstLetters=true] - A boolean parameter that determines whether all the
+ * first letters of each word in the string should be capitalized or not.
  *
  * @returns The given string as title text.
  *
@@ -104,8 +110,11 @@ export function capitalizeAll(str: string): string {
  * toTitle("getting-started");
  * ```
  */
-export function toTitle(str: string): string {
-	return capitalizeAll(str.replace(/-/g, ' '));
+export function toTitle(str: string, capitalizeAllFirstLetters = true): string {
+	if (capitalizeAllFirstLetters) {
+		return capitalizeAll(str.replace(/-/g, ' ')).trim();
+	}
+	return capitalize(str.replace(/-/g, ' ')).trim();
 }
 
 /**
@@ -126,7 +135,8 @@ export function toSlug(str: string): string {
 	return str
 		.toLowerCase()
 		.replace(/[^\w ]+/g, '')
-		.replace(/ +/g, '-');
+		.replace(/ +/g, '-')
+		.trim();
 }
 
 /**
@@ -145,9 +155,7 @@ export function toSlug(str: string): string {
  * ```
  */
 export function textBetween(text: string, startsWith: string, endsWith: string) {
-	const regex = new RegExp(`${_escape(startsWith)}(.*)${_escape(endsWith)}+$`);
-	const result = text.match(regex);
-
+	const result = text.match(`(?<=${_escape(startsWith)})(.*)(?=${_escape(endsWith)})`);
 	return result ? result[1].trim() : text;
 }
 
@@ -157,29 +165,29 @@ export function textBetween(text: string, startsWith: string, endsWith: string) 
 function _escape(value: string): string {
 	switch (value) {
 		case '[':
-			return '[';
+			return '\\[';
 		case ']':
-			return ']';
+			return '\\]';
 		case '/':
-			return '/';
+			return '\\/';
 		case '^':
-			return '^';
+			return '\\^';
 		case '$':
-			return '$';
+			return '\\$';
 		case '.':
-			return '.';
+			return '\\.';
 		case '|':
-			return '|';
+			return '\\|';
 		case '?':
-			return '?';
+			return '\\?';
 		case '*':
-			return '*';
+			return '\\*';
 		case '+':
-			return '+';
+			return '\\+';
 		case '(':
-			return '(';
+			return '\\(';
 		case ')':
-			return ')';
+			return '\\)';
 		default:
 			return value;
 	}
