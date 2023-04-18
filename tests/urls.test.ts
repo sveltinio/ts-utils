@@ -115,7 +115,7 @@ describe('parentUrl', () => {
 	});
 
 	it('should be an error with "Expected a valid URL" as message', () => {
-		const result: any = parentUrl('foo/bar') as Err<never, Error>;
+		const result = parentUrl('foo/bar') as Err<never, Error>;
 		expect(result.isErr()).toBe(true);
 		expect(result.error.message).toBe('Expected a valid URL');
 		expect(result.error).toStrictEqual(new Error('Expected a valid URL'));
