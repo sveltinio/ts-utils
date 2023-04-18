@@ -1,9 +1,17 @@
 /**
- * It returns true if the value is an empty string, an empty array, or an empty object.
+ * The function checks if a given value is empty or not.
  *
- * @param value - generic type - The value to check if it's empty.
+ * @param {T} value - The value to be checked for emptiness. It can be of type boolean, number,
+ * string, array, object, symbol, undefined, or null.
  *
- * @returns a boolean representing if the given value is empty or not.
+ * @returns a boolean value indicating whether the input value is empty or not.
+ * - If the value is null or undefined, it returns true
+ * - If the value is a boolean, it returns the boolean value
+ * - If the value is a number, it returns true if the value is NaN
+ * - If the value is a string, it returns true if the string is empty
+ * - If the value is an array, it returns true if the array has zero lenght
+ * - If the value is an object, it returns true if no keys
+ * - if the value is a symbol, it returns true if it is "Symbol()"
  */
 export function isEmpty<
 	T extends boolean | number | string | [] | object | symbol | undefined | null

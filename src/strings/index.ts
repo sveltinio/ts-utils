@@ -140,7 +140,7 @@ export function toSlug(str: string): string {
 }
 
 /**
- * The function converts a given string to snake case.
+ * The function converts a given string to snake case format.
  *
  * @param {string} str - The input string that needs to be converted to snake case.
  *
@@ -190,6 +190,17 @@ export function isHex(str: string): boolean {
 	return /^#([0-9A-F]{3}){1,2}$/i.test(str);
 }
 
+/**
+ * The function takes a string and returns either the substring after the first character (if the
+ * string is a valid hex value) or an error message.
+ *
+ * @param {string} str - A string that may or may not be a valid hex string.
+ *
+ * @returns either an `Err` or an `Ok` type. If the input string is a valid hex string, the function
+ * returns an `Ok` type with the hex value as a string. If the input string is not a valid hex
+ * string, the function returns an `Err` type with an `Error` object containing the message
+ * "Expected a valid hex string".
+ */
 export function getHexValue(str: string): Err<never, Error> | Ok<string, never> {
 	if (isHex(str)) return ok(str.substring(1));
 	return err(new Error('Expected a valid hex string'));
@@ -247,14 +258,16 @@ export function textBetween(text: string, startsWith: string, endsWith: string) 
 
 /**
  * The function removes the first occurrence of a specified string from a given text.
- * @param {string} text - The original string from which the first occurrence of the search string will
- * be removed.
- * @param {string} searchstr - The searchstr parameter is a string that represents the substring that
- * needs to be removed from the text parameter. The function removes the first occurrence of this
- * substring from the text parameter.
- * @returns The function `removeFirstOccurrence` returns a modified version of the `text` string where
- * the first occurrence of the `searchstr` string has been removed. If the `searchstr` string is not
- * found in the `text` string, the original `text` string is returned.
+ *
+ * @param {string} text - The original string from which the first occurrence of the search string
+ * will be removed.
+ * @param {string} searchstr - The searchstr parameter is a string that represents the substring
+ * that needs to be removed from the text parameter. The function removes the first occurrence of
+ * this substring from the text parameter.
+ *
+ * @returns The function `removeFirstOccurrence` returns a modified version of the `text` string
+ * where the first occurrence of the `searchstr` string has been removed. If the `searchstr` string
+ * is not found in the `text` string, the original `text` string is returned.
  */
 export function removeFirstOccurrence(text: string, searchstr: string) {
 	const index = text.indexOf(searchstr);

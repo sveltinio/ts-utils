@@ -4,11 +4,13 @@ import { ok, err, Ok, Err } from 'neverthrow';
 
 /**
  * The function checks if a given string is a valid URL.
+ *
  * @param {string} url - string parameter representing a URL that needs to be validated.
- * @returns The function `isUrl` returns a boolean value (`true` or `false`) depending on whether the
- * input `url` is a valid URL or not. If the input `url` can be successfully parsed as a URL using the
- * `URL` constructor, the function returns `true`. Otherwise, if an error is thrown during parsing, the
- * function returns `false`.
+ *
+ * @returns The function `isUrl` returns a boolean value (`true` or `false`) depending on whether
+ * the input `url` is a valid URL or not. If the input `url` can be successfully parsed as a URL
+ * using the`URL` constructor, the function returns `true`. Otherwise, if an error is thrown during
+ * parsing, the function returns `false`.
  */
 export function isUrl(url: string): boolean {
 	try {
