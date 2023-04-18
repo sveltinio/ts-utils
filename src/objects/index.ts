@@ -1,3 +1,18 @@
+import { Ok, Err, ok, err } from 'neverthrow';
+
+/**
+ * The function checks if a given value is a plain object.
+ *
+ * @param {T} value - The value to be checked if it is a plain object.
+ *
+ * @returns A boolean value indicating whether the input value is a plain object or not.
+ */
+export function isPlainObject<
+	T extends boolean | number | string | any[] | object | symbol | undefined | null
+>(value: T): boolean {
+	return value != null && typeof value === 'object' && value.constructor === Object;
+}
+
 /**
  * The function checks if an object has a specific property with a specific value.
  *
@@ -11,8 +26,16 @@
  * @returns a boolean value. It will return `true` if the `prop` exists in the `obj` and its value
  * is equal to the `value` parameter passed to the function. Otherwise, it will return `false`.
  */
-export function checkPropValue(obj: any, prop: any, value: any): boolean {
-	return prop in Object(obj) && obj[prop] == value;
+export function checkPropValue(
+	obj: any,
+	prop: any,
+	value: any
+): Err<never, Error> | Ok<boolean, never> {
+	if (!isPlainObject(obj)) {
+		return err(new Error('Expected a plain javascript object'));
+	}
+
+	return ok(prop in Object(obj) && obj[prop] == value);
 }
 
 /**
@@ -46,14 +69,20 @@ export function isValueSet<T extends boolean | number | string>(value: T) {
  * present in the `obj` object and their values are not empty strings, `undefined`, or strings
  * containing the word "undefined". It returns `false` otherwise.
  */
-export function checkRequiredProp(obj: any, props: any[]): boolean {
-	return props.every(
-		(p) => p in obj && obj[p] != '' && obj[p] != undefined && !obj[p].includes('undefined')
+export function checkRequiredProp(obj: any, props: any[]): Err<never, Error> | Ok<boolean, never> {
+	if (!isPlainObject(obj)) {
+		return err(new Error('Expected a plain javascript object'));
+	}
+
+	return ok(
+		props.every(
+			(p) => p in obj && obj[p] != '' && obj[p] != undefined && !obj[p].includes('undefined')
+		)
 	);
 }
 
 /**
- * The function converts an object of styles into a string of CSS variables. It takes an object as
+ * The function converts an object into a string of CSS variables. It takes an object as
  * an argument, and for each key-value pair in the object creates a CSS variable declaration with
  * the key as the variable name and the value as thevariable value.  The declarations are then
  * joined together with semicolons and returned as a single string.
@@ -61,11 +90,16 @@ export function checkRequiredProp(obj: any, props: any[]): boolean {
  * @param {object} obj - The `obj` parameter is an object containing key-value pairs of CSS style
  * properties and their corresponding values.
  *
- * @returns The function `stylesObjToCSSVars` returns a string that contains CSS variable
- * declarations in the format `--key:value`.
+ * @returns a string that contains CSS variable declarations in the format `--key:value`.
  */
-export function stylesObjToCSSVars(obj: any): string {
-	return Object.entries(obj)
-		.map(([key, value]) => `--${key}: ${value};`)
-		.join(' ');
+export function objToCssVars(obj: any): Err<never, Error> | Ok<string, never> {
+	if (!isPlainObject(obj)) {
+		return err(new Error('Expected a plain javascript object'));
+	}
+
+	return ok(
+		Object.entries(obj)
+			.map(([key, value]) => `--${key}: ${value};`)
+			.join(' ')
+	);
 }
