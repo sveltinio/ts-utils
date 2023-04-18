@@ -14,17 +14,17 @@ export function isPlainObject<
 }
 
 /**
- * The function checks if an object has a specific property with a specific value.
+ * Thie function checks if a given object has a specified property with a specified value.
  *
- * @param {any} obj - The `obj` parameter is the object that we want to check the property value
- * of.
- * @param {string} prop - The `prop` parameter is the name of the property that
- * we want to check in the object.
- * @param {any} value - The `value` parameter is the value that we want to check if it exists
- * in the specified property of the given object.
+ * @param {any} obj - The object to check the property value in.
+ * @param {any} prop - The `prop` parameter is a property/key of the `obj` parameter that we want to
+ * check the value of.
+ * @param {any} value - The value parameter is the value that we want to check if it matches the
+ * value of the property in the object.
  *
- * @returns a boolean value. It will return `true` if the `prop` exists in the `obj` and its value
- * is equal to the `value` parameter passed to the function. Otherwise, it will return `false`.
+ * @returns Returns either an `Err` containing an `Error` object if the input `obj` is not
+ * a plain javascript object, or an `Ok` containing a boolean value indicating whether the
+ *  input `obj` has a property `prop` with the value `value`.
  */
 export function checkPropValue(
 	obj: any,
@@ -39,35 +39,17 @@ export function checkPropValue(
 }
 
 /**
- * The function checks if a boolean, number, or string value is set or not.
- * @param {T} value - The parameter `value` is of a generic type `T` which can be either a boolean,
- * number or string. It is used to check if a value is set or not based on its type.
- * @returns The function `isValueSet` returns a boolean value. It returns `true` if the input value is
- * set (i.e. not null, undefined, or empty), and `false` otherwise. The specific conditions for each
- * data type are as follows:
-
-export function isValueSet<T extends boolean | number | string>(value: T) {
-	switch (typeof value) {
-		case 'boolean':
-			return true;
-		case 'number':
-			return value > 0;
-		case 'string':
-			return isEmpty(value);
-	}
-}
- */
-/**
- * The function checks if all required properties exist and are not empty or undefined in a given
- * object.
+ * The function checks if a plain JavaScript object has all the required properties and
+ * returns an error if it doesn't.
  *
  * @param {any} obj - The object that needs to be checked for the presence of required properties.
  * @param {any[]} props - props is an array of strings representing the required properties that
- * need to be checked in the obj parameter.
+ * should exist in the obj parameter. The function checks if all the properties in the props array
+ * exist in the obj parameter and are not empty, undefined, or contain the string 'undefined'.
  *
- * @returns a boolean value. It returns `true` if all the properties in the `props` array are
- * present in the `obj` object and their values are not empty strings, `undefined`, or strings
- * containing the word "undefined". It returns `false` otherwise.
+ * @returns Returns either an `Err` containing an `Error` object if the `obj` parameter is not a
+ * plain javascript object, or an `Ok` containing a boolean value indicating whether all the
+ * properties in the `props` array are present and not empty or undefined in the `obj` parameter.
  */
 export function checkRequiredProp(obj: any, props: any[]): Err<never, Error> | Ok<boolean, never> {
 	if (!isPlainObject(obj)) {
@@ -82,15 +64,14 @@ export function checkRequiredProp(obj: any, props: any[]): Err<never, Error> | O
 }
 
 /**
- * The function converts an object into a string of CSS variables. It takes an object as
- * an argument, and for each key-value pair in the object creates a CSS variable declaration with
- * the key as the variable name and the value as thevariable value.  The declarations are then
- * joined together with semicolons and returned as a single string.
+ * The function converts a plain JavaScript object into a string of CSS variables.
  *
- * @param {object} obj - The `obj` parameter is an object containing key-value pairs of CSS style
- * properties and their corresponding values.
+ * @param {any} obj - The `obj` parameter is expected to be a plain JavaScript object containing
+ * key-value pairs that will be converted into CSS variables.
  *
- * @returns a string that contains CSS variable declarations in the format `--key:value`.
+ * @returns Returns either an `Err` containing an `Error` object if the input `obj` is not
+ * a plain javascript object, or an `Ok` containing a string of CSS variable declarations created
+ * from the key-value pairs of the input `obj`.
  */
 export function objToCssVars(obj: any): Err<never, Error> | Ok<string, never> {
 	if (!isPlainObject(obj)) {
