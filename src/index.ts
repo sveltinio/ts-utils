@@ -16,14 +16,12 @@
 export function isEmpty<
 	T extends boolean | number | string | [] | object | symbol | undefined | null
 >(value: T): boolean {
-	if (value === null || value === undefined) {
+	if (value === null || value === undefined || Number.isNaN(value)) {
 		return true;
 	}
 	switch (typeof value) {
 		case 'boolean':
-			return Boolean(value);
-		case 'number':
-			return Number.isNaN(value);
+			return value;
 		case 'string':
 			return !value;
 		case 'object':
@@ -36,6 +34,6 @@ export function isEmpty<
 		case 'symbol':
 			return value.toString() === 'Symbol()';
 		default:
-			return true;
+			return !value;
 	}
 }

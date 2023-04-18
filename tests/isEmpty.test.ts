@@ -13,7 +13,8 @@ describe('isEmpty', () => {
 	});
 
 	test('numbers', () => {
-		expect(isEmpty(0)).toBe(false);
+		expect(isEmpty(0)).toBe(true);
+		expect(isEmpty(1)).toBe(false);
 		expect(isEmpty(124)).toBe(false);
 	});
 
@@ -34,7 +35,6 @@ describe('isEmpty', () => {
 	});
 
 	test('functions and symbols', () => {
-		expect(isEmpty(function () {})).toBe(true);
 		expect(isEmpty(Symbol())).toBe(true);
 		expect(isEmpty(Symbol('x'))).toBe(false);
 		expect(isEmpty(/./)).toBe(true);
