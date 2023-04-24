@@ -7,10 +7,9 @@ module.exports = {
 		project: ['./tsconfig.json'],
 		tsconfigRootDir: __dirname
 	},
-	plugins: ['@typescript-eslint', 'neverthrow'],
+	plugins: ['@typescript-eslint'],
 	rules: {
-		'@typescript-eslint/no-explicit-any': 'off',
-		'neverthrow/must-use-result': 'error'
+		'@typescript-eslint/no-explicit-any': 'off'
 	},
 	ignorePatterns: ['*.cjs'],
 	env: {
