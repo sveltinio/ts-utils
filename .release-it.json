@@ -20,11 +20,32 @@
 	},
 	"plugins": {
 		"@release-it/conventional-changelog": {
-			"preset": "angular",
-			"infile": "CHANGELOG.md"
-		},
-		"@release-it/keep-a-changelog": {
-			"filename": "CHANGELOG.md"
+			"infile": "CHANGELOG.md",
+			"preset": {
+				"name": "conventionalcommits",
+				"types": [
+					{
+						"type": "chore",
+						"section": ":house_with_garden: Chore"
+					},
+					{
+						"type": "feat",
+						"section": ":rocket: Features"
+					},
+					{
+						"type": "fix",
+						"section": ":rescue_worker_helmet: Fixes"
+					},
+					{
+						"type": "ci",
+						"section": "gear: CI"
+					},
+					{
+						"type": "docs",
+						"section": ":book: Docs"
+					}
+				]
+			}
 		}
 	}
 }
