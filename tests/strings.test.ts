@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { Ok, Err } from 'neverthrow';
+import { Ok, ok } from 'neverthrow';
 import {
+	normalize,
 	capitalize,
 	uppercase,
 	lowercase,
@@ -9,304 +10,546 @@ import {
 	toSlug,
 	removeTrailingSlash,
 	textBetween,
-	isHex,
-	getHexValue,
 	toKebabCase,
 	toSnakeCase,
 	removeFirstOccurrence,
 	isCommaSepareted,
-	toCommaSepareted
-} from '../src/strings';
+	toCommaSepareted,
+	toCamelCase,
+	toPascalCase,
+	camelToKebab,
+	camelToSnake
+} from '../src/strings/index.js';
 
-describe('capitalize', () => {
-	it('should be Welcome', () => {
-		const text = 'welcome';
+describe('normalize', () => {
+	it('should be getting started', () => {
+		const text = 'getting-started';
+		const result = normalize(text);
 
-		const result = capitalize(text);
-		expect(result).toBe('Welcome');
+		expect(result).toEqual(ok('getting started'));
 	});
 
-	it('should be Getting started', () => {
-		const text = 'getting started';
+	it('should be bread and butter', () => {
+		const text = 'bread_and%butter';
+		const result = normalize(text);
 
-		const result = capitalize(text);
-		expect(result).toBe('Getting started');
+		expect(result).toEqual(ok('bread and butter'));
+	});
+
+	it('should be an error with "[strings.normalize] Expected string value as input" as message', () => {
+		const result = normalize(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.normalize] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.normalize] Expected string value as input')
+		);
+	});
+
+	it('should use empty string as default value through unwrapOr', () => {
+		expect(normalize(10).unwrapOr('')).toBe('');
+	});
+
+	it('should return the error string through match', () => {
+		const result = normalize(10).match(
+			(str) => str,
+			(err) => `${err}`
+		);
+		expect(result).toBe('Error: [strings.normalize] Expected string value as input');
 	});
 });
 
 describe('uppercase', () => {
 	it('should be WELCOME', () => {
 		const text = 'welcome';
-
 		const result = uppercase(text);
-		expect(result).toBe('WELCOME');
+
+		expect(result).toEqual(ok('WELCOME'));
 	});
 
-	it('should be GETTING STARTED', () => {
-		const text = 'getting started';
-
+	it('should be BREAD AND BUTTER', () => {
+		const text = 'bread and butter';
 		const result = uppercase(text);
-		expect(result).toBe('GETTING STARTED');
+
+		expect(result).toEqual(ok('BREAD AND BUTTER'));
+	});
+
+	it('should be an error with "[strings.uppercase] Expected string value as input" as message', () => {
+		const result = uppercase(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.uppercase] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.uppercase] Expected string value as input')
+		);
 	});
 });
 
 describe('lowercase', () => {
 	it('should be welcome', () => {
 		const text = 'Welcome';
-
 		const result = lowercase(text);
-		expect(result).toBe('welcome');
+
+		expect(result).toEqual(ok('welcome'));
 	});
 
-	it('should be getting started', () => {
-		const text = 'GETTING STARTED';
-
+	it('should be bread and butter', () => {
+		const text = 'BREAD AND BUTTER';
 		const result = lowercase(text);
-		expect(result).toBe('getting started');
+
+		expect(result).toEqual(ok('bread and butter'));
+	});
+
+	it('should be an error with "[strings.lowercase] Expected string value as input" as message', () => {
+		const result = lowercase(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.lowercase] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.lowercase] Expected string value as input')
+		);
+	});
+});
+
+describe('capitalize', () => {
+	it('should be Welcome', () => {
+		const text = 'welcome';
+		const result = capitalize(text);
+
+		expect(result).toEqual(ok('Welcome'));
+	});
+
+	it('should be Bread and butter', () => {
+		const text = 'bread and butter';
+		const result = capitalize(text);
+
+		expect(result).toEqual(ok('Bread and butter'));
+	});
+
+	it('should be an error with "[strings.capitalize] Expected string value as input" as message', () => {
+		const result = capitalize(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.capitalize] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.capitalize] Expected string value as input')
+		);
 	});
 });
 
 describe('capitalizeAll', () => {
 	it('should be Welcome', () => {
 		const text = 'welcome';
-
 		const result = capitalizeAll(text);
-		expect(result).toBe('Welcome');
+
+		expect(result).toEqual(ok('Welcome'));
 	});
 
-	it('should be Getting Started', () => {
-		const text = 'getting started';
-
+	it('should be Bread And Butter', () => {
+		const text = 'bread and butter';
 		const result = capitalizeAll(text);
-		expect(result).toBe('Getting Started');
+
+		expect(result).toEqual(ok('Bread And Butter'));
+	});
+
+	it('should be an error with "[strings.capitalizeAll] Expected string value as input" as message', () => {
+		const result = capitalizeAll(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.capitalizeAll] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.capitalizeAll] Expected string value as input')
+		);
 	});
 });
 
 describe('toTitle', () => {
 	it('should be Welcome', () => {
 		const text = 'welcome';
-
 		const result = toTitle(text);
-		expect(result).toBe('Welcome');
+
+		expect(result).toEqual(ok('Welcome'));
 	});
 
-	it('should be Getting Started', () => {
-		const text = 'getting-started';
-
+	it('should be Bread And Butter', () => {
+		const text = 'bread-and-butter';
 		const result = toTitle(text);
-		expect(result).toBe('Getting Started');
+
+		expect(result).toEqual(ok('Bread And Butter'));
 	});
 
-	it('should be Getting started', () => {
-		const text = 'getting-started';
-
+	it('should be Bread and butter', () => {
+		const text = 'bread-and-butter';
 		const result = toTitle(text, false);
-		expect(result).toBe('Getting started');
+
+		expect(result).toEqual(ok('Bread and butter'));
+	});
+
+	it('should be an error with "[strings.toTitle] Expected string value as input"', () => {
+		const result = toTitle(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.toTitle] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.toTitle] Expected string value as input')
+		);
 	});
 });
 
 describe('toSlug', () => {
 	it('should be welcome', () => {
 		const text = 'welcome';
-
 		const result = toSlug(text);
-		expect(result).toBe('welcome');
+
+		expect(result).toEqual(ok('welcome'));
 	});
 
 	it('should be getting-started', () => {
 		const text = 'Getting Started';
-
 		const result = toSlug(text);
-		expect(result).toBe('getting-started');
+
+		expect(result).toEqual(ok('getting-started'));
 	});
 
-	it('should be my-first-topic', () => {
-		const text = 'My First Topic';
-
+	it('should be bread-and-butter', () => {
+		const text = 'Bread And Butter';
 		const result = toSlug(text);
-		expect(result).toBe('my-first-topic');
+
+		expect(result).toEqual(ok('bread-and-butter'));
+	});
+
+	it('should be an error with "[strings.toSlug] Expected string value as input" as message', () => {
+		const result = toSlug(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.toSlug] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.toSlug] Expected string value as input')
+		);
 	});
 });
 
 describe('removeTrailingSlash', () => {
 	it('should be http://example.com/contact', () => {
 		const text = 'http://example.com/contact/';
-
 		const result = removeTrailingSlash(text);
-		expect(result).toBe('http://example.com/contact');
+
+		expect(result).toEqual(ok('http://example.com/contact'));
 	});
 
 	it('should be http://example.com/about', () => {
 		const text = 'http://example.com/about';
-
 		const result = removeTrailingSlash(text);
-		expect(result).toBe('http://example.com/about');
+
+		expect(result).toEqual(ok('http://example.com/about'));
+	});
+
+	it('should be an error with "removeTrailingSlash: Expected string value as input" as message', () => {
+		const result = removeTrailingSlash(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.removeTrailingSlash] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.removeTrailingSlash] Expected string value as input')
+		);
 	});
 });
 
 describe('textBetween', () => {
-	it('should be "contact"', () => {
-		const text = '/contact/';
-		const result = textBetween(text, '/', '/');
+	const sample =
+		'This is a test string with some characters that need to be escaped in a JavaScript RegExp. The string contains a backslash , a caret ^, a dollar sign $, a period ., a vertical bar |, a question mark ?, an asterisk *, a plus sign +, a opening square bracket [, a closing square bracket ], a couples of /slashes/, an ampersand &, a opening curly brace {, a closing curly brace }, a parenthesis (), a dash -, and some backslashes like \\';
 
-		expect(result).toBe('contact');
+	it('should be "a caret"', () => {
+		const result = textBetween(sample, ',', '^');
+		expect(result).toEqual(ok('a caret'));
 	});
 
-	it('should be "ts/welcom"', () => {
-		const text = 'more than happy.';
-		const result = textBetween(text, 'more', '.');
+	it('should be ", a question mark"', () => {
+		const result = textBetween(sample, '|', '?');
+		expect(result).toEqual(ok(', a question mark'));
+	});
 
-		expect(result).toBe('than happy');
+	it('should be ", a period ., a vertical bar"', () => {
+		const result = textBetween(sample, '$', '|');
+		expect(result).toEqual(ok(', a period ., a vertical bar'));
+	});
+
+	it('should be ", a period"', () => {
+		const result = textBetween(sample, '$', '.');
+		expect(result).toEqual(ok(', a period'));
+	});
+
+	it('should be ", a dash"', () => {
+		const result = textBetween(sample, ')', '-');
+		expect(result).toEqual(ok(', a dash'));
+	});
+
+	it('should be "like"', () => {
+		const result = textBetween(sample, 'backslashes', '\\');
+		expect(result).toEqual(ok('like'));
 	});
 
 	it('should be "posts/welcome"', () => {
-		const text = '/posts/welcome/';
-		const result = textBetween(text, '/', '/');
-
-		expect(result).toBe('posts/welcome');
+		const result = textBetween(sample, '/', '/');
+		expect(result).toEqual(ok('slashes'));
 	});
 
-	it('should be "(posts)"', () => {
-		const text = '(posts)/welcome/';
-		const result = textBetween(text, '(', ')');
-
-		expect(result).toBe('posts');
+	it('should be "posts"', () => {
+		const result = textBetween(sample, '(', ')');
+		expect(result).toEqual(ok(''));
 	});
 
-	it('should be "likes and 600"', () => {
-		const text = 'I got 500+ likes and 600* or, if you prefer money it is 1000$';
-		const result = textBetween(text, '+', '*');
-
-		expect(result).toBe('likes and 600');
+	it('should be ", a opening curly brace"', () => {
+		let result = textBetween(sample, '&', '{');
+		expect(result).toEqual(ok(', a opening curly brace'));
 	});
 
-	it('should be "if you prefer money it is 1000"', () => {
-		const text = 'I got 500+ likes and 600* or, if you prefer money it is 1000$';
-		const result = textBetween(text, ',', '$');
-
-		expect(result).toBe('if you prefer money it is 1000');
+	it('should be ", an asterisk"', () => {
+		const result = textBetween(sample, '?', '*');
+		expect(result).toEqual(ok(', an asterisk'));
 	});
 
-	it('should be "likes and 600"', () => {
-		const text = 'music&playlist?kc|zap';
-		let result = textBetween(text, '&', '|');
-
-		expect(result).toBe('playlist?kc');
+	it('should be ", a opening square bracket"', () => {
+		const result = textBetween(sample, '+', '[');
+		expect(result).toEqual(ok(', a opening square bracket'));
 	});
 
-	it('should be "kc"', () => {
-		const text = 'music&playlist?kc|zap';
-		const result = textBetween(text, '?', '|');
-
-		expect(result).toBe('kc');
+	it('should be ", a closing square bracket"', () => {
+		const result = textBetween(sample, '[', ']');
+		expect(result).toEqual(ok(', a closing square bracket'));
 	});
 
-	it('should be "music=zap"', () => {
-		const text = '[music=zap]';
-		const result = textBetween(text, '[', ']');
-
-		expect(result).toBe('music=zap');
+	it('should be ", a closing curly brace"', () => {
+		const result = textBetween(sample, '{', '}');
+		expect(result).toEqual(ok(', a closing curly brace'));
 	});
 
-	it('should be "music=zap"', () => {
-		const text = '^music=zap.';
-		const result = textBetween(text, '^', '.');
+	it('should be an error with "[strings.textBetween] Expected string value as input" as message', () => {
+		const result = textBetween(10);
 
-		expect(result).toBe('music=zap');
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.textBetween] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.textBetween] Expected string value as input')
+		);
 	});
 });
 
-describe('hex colors ', () => {
-	it('should be a valid hex color', async () => {
-		expect(isHex('#ff0000')).toBe(true);
-		expect(isHex('#fff')).toBe(true);
+describe('toSnakeCase', () => {
+	it('should convert a single word to snake_case', () => {
+		const result = toSnakeCase('hello');
+
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('hello');
 	});
 
-	it('should be an invalid hex color', async () => {
-		expect(isHex('ff0000')).toBe(false);
+	it('should convert a sentence to snake_case', () => {
+		const result = toSnakeCase('Hello world!');
+
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('hello_world');
 	});
 
-	it('should give me back the hex string from a valid hex color string', async () => {
-		const hex = getHexValue('#ff0000') as Ok<string, never>;
-		expect(hex.value).toBe('ff0000');
-	});
+	it('should return Err for an invalid input type', () => {
+		const result = toSnakeCase(123);
 
-	it('should give me back Expected a valid hex string from a invalid hex color string', async () => {
-		const hex = getHexValue('ff0000') as Err<never, Error>;
-		expect(hex.error.message).toBe('Expected a valid hex string');
-	});
-});
-
-describe('toKebabCase ', () => {
-	it('should be a valid kebabCase format', async () => {
-		expect(toKebabCase('borderColor')).toBe('border-color');
-		expect(toKebabCase('gettingStarted')).toBe('getting-started');
-		expect(toKebabCase('tabLinkColor')).toBe('tab-link-color');
-	});
-
-	it('should not be a valid kebabCase format', async () => {
-		expect(toKebabCase('borderColor')).not.toBe('border_color');
-	});
-
-	it('should be as it is', async () => {
-		expect(toKebabCase('bordercolor')).toBe('bordercolor');
-	});
-
-	it('should be as it is because no digits or chars', async () => {
-		expect(toKebabCase('()')).toBe('()');
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.toSnakeCase] Expected string value as input'
+		);
 	});
 });
 
-describe('toSnakeCase ', () => {
-	it('should be a valid snake_case format', async () => {
-		expect(toSnakeCase('borderColor')).toBe('border_color');
-		expect(toSnakeCase('gettingStarted')).toBe('getting_started');
-		expect(toSnakeCase('tabLinkColor')).toBe('tab_link_color');
+describe('toKebabCase', () => {
+	it('should return Ok for a valid input string', () => {
+		const result = toKebabCase('hello world');
+
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('hello-world');
 	});
 
-	it('should not be a valid snake_case format', async () => {
-		expect(toSnakeCase('borderColor')).not.toBe('border-color');
-	});
+	it('should return Err for an invalid input type', () => {
+		const result = toKebabCase(123);
 
-	it('should be as it is', async () => {
-		expect(toSnakeCase('bordercolor')).toBe('bordercolor');
-	});
-
-	it('should be as it is because no digits or chars', async () => {
-		expect(toSnakeCase('()')).toBe('()');
-	});
-});
-
-describe('comma separated list', () => {
-	it('should be a valid comma separted list', async () => {
-		expect(isCommaSepareted('one,')).toBe(true);
-		expect(isCommaSepareted('one, two')).toBe(true);
-		expect(isCommaSepareted('one, two, three')).toBe(true);
-	});
-
-	it('should be a invalid comma separted list', async () => {
-		expect(isCommaSepareted('one')).toBe(false);
-		expect(isCommaSepareted('one two three')).toBe(false);
-	});
-});
-
-describe('to comma separated string', () => {
-	it('should be a valid comma separted list', async () => {
-		expect(toCommaSepareted('one two')).toBe('one,two');
-		expect(toCommaSepareted('one;two')).toBe('one,two');
-	});
-});
-
-describe('remove first Occurrence', () => {
-	it('should return the string without the initial /', async () => {
-		expect(removeFirstOccurrence('/20531316728/posts/10154009990506729/', '/')).toBe(
-			'20531316728/posts/10154009990506729/'
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.toKebabCase] Expected string value as input'
 		);
 	});
 
-	it('should return the string as it is', async () => {
-		expect(removeFirstOccurrence('/20531316728/posts/10154009990506729/', '$')).toBe(
-			'/20531316728/posts/10154009990506729/'
+	it('should handle multiple spaces and leading/trailing spaces', () => {
+		const result = toKebabCase('hello   world ');
+
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('hello-world');
+	});
+});
+
+describe('toCamelCase', () => {
+	it('should convert space-separated words to camelCase', () => {
+		const result = toCamelCase('hello world');
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('helloWorld');
+	});
+
+	it('should convert kebab-case words to camelCase', () => {
+		const result = toCamelCase('foo-bar-baz');
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('fooBarBaz');
+	});
+
+	it('should return an error if input is not a string', () => {
+		const result = toCamelCase(123);
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.toCamelCase] Expected string value as input'
+		);
+	});
+});
+
+describe('toPascalCase', () => {
+	it('converts a string with spaces to PascalCase', () => {
+		const input = 'hello world';
+		const result = toPascalCase(input);
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('HelloWorld');
+	});
+
+	it('converts a string with hyphens to PascalCase', () => {
+		const input = 'foo-bar-baz';
+		const result = toPascalCase(input);
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe('FooBarBaz');
+	});
+
+	it('returns an error for non-string input', () => {
+		const input = 42;
+		const result = toPascalCase(input);
+		expect(result.isOk()).toBe(false);
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr()).toMatchObject({
+			message: '[strings.toPascalCase] Expected string value as input'
+		});
+	});
+});
+describe('camelToSnake', () => {
+	it('converts a camelCase string to snake_case', () => {
+		const input = 'helloWorld';
+		const expectedOutput = 'hello_world';
+		const result = camelToSnake(input);
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe(expectedOutput);
+	});
+
+	it('returns an error when given a non-string input', () => {
+		const input = 42;
+		const result = camelToSnake(input);
+		expect(result.isOk()).toBe(false);
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.camelToSnake] Expected string value as input'
+		);
+	});
+});
+
+describe('camelToKebab', () => {
+	it('converts a camelCase string to kebab-case', () => {
+		const input = 'helloWorld';
+		const expectedOutput = 'hello-world';
+		const result = camelToKebab(input);
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe(expectedOutput);
+	});
+
+	it('returns an error when given a non-string input', () => {
+		const input = 42;
+		const result = camelToKebab(input);
+		expect(result.isOk()).toBe(false);
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.camelToKebab] Expected string value as input'
+		);
+	});
+});
+
+describe('isCommaSeparated', () => {
+	it('should be a valid comma separted list', async () => {
+		expect(isCommaSepareted('one,')).toEqual(true);
+		expect(isCommaSepareted('one, two')).toEqual(true);
+		expect(isCommaSepareted('one, two, three')).toEqual(true);
+	});
+
+	it('should be a invalid comma separted list', async () => {
+		expect(isCommaSepareted('one')).toEqual(false);
+		expect(isCommaSepareted('one two three')).toEqual(false);
+	});
+});
+
+describe('toCommaSeparated', () => {
+	it('should be a valid comma separted list', async () => {
+		expect(toCommaSepareted('one two')).toEqual(ok('one,two'));
+		expect(toCommaSepareted('one;two')).toEqual(ok('one,two'));
+		expect(toCommaSepareted('one-two')).toEqual(ok('one,two'));
+		expect(toCommaSepareted('one_two')).toEqual(ok('one,two'));
+	});
+
+	it('should be an error with "[strings.toCommaSepareted] Expected string value as input" as message', () => {
+		const result = toCommaSepareted(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.toCommaSeparated] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.toCommaSeparated] Expected string value as input')
+		);
+	});
+});
+
+describe('removeFirstOccurrence', () => {
+	it('should always return valid result', async () => {
+		expect(removeFirstOccurrence('Hello World', 'lo')._unsafeUnwrap()).toBe('Hel World');
+
+		expect(removeFirstOccurrence('  Foo Bar  ', 'Bar', false)._unsafeUnwrap()).toBe('  Foo   ');
+
+		expect(removeFirstOccurrence('Hello World', 'xyz')._unsafeUnwrap()).toBe('Hello World');
+
+		expect(removeFirstOccurrence('Hello World', 'lo', false)._unsafeUnwrap()).toBe('Hel World');
+	});
+
+	it('should return error', () => {
+		expect(removeFirstOccurrence(null, 'lo').isErr()).toBe(true);
+
+		expect(removeFirstOccurrence('Hello World', null).isErr()).toBe(true);
+	});
+
+	it('should be an error with "[strings.removeFirstOccurrence] Expected string value as input" as message', () => {
+		const result = removeFirstOccurrence(10);
+
+		expect(result.isErr()).toBe(true);
+		expect(result._unsafeUnwrapErr().message).toBe(
+			'[strings.removeFirstOccurrence] Expected string value as input'
+		);
+		expect(result._unsafeUnwrapErr()).toStrictEqual(
+			new Error('[strings.removeFirstOccurrence] Expected string value as input')
 		);
 	});
 });
