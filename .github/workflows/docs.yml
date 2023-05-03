@@ -1,0 +1,46 @@
+name: Publish TSDoc
+on:
+  release:
+    types: [created]
+jobs:
+  web-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Run PNPM install
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Generate documentation pages
+        run: pnpm docs:generate
+
+      - name: FTP Deploy to production domain
+        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        with:
+          server: ${{ secrets.PROD_FTP_HOSTNAME }}
+          username: ${{ secrets.PROD_FTP_USERNAME }}
+          password: ${{ secrets.PROD_FTP_PASSWORD }}
+          dry-run: false
+          local-dir: ./docs/
+          server-dir: ${{ secrets.PROD_FTP_SERVER_FOLDER }}
+          exclude: .git*
+            - .git*/**
+            -  **/.git*/**
+            - node_modules/**
+            - node_modules/**/*
