@@ -56,6 +56,9 @@
 		"test:watch": "vitest watch"
 	},
 	"type": "module",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
 		"dist"
 	],
@@ -68,10 +71,20 @@
 			"import": "./dist/collections/index.js",
 			"require": "./dist/collections/index.cjs"
 		},
+		"./colors": {
+			"types": "./dist/colors/index.d.ts",
+			"import": "./dist/colors/index.js",
+			"require": "./dist/colors/index.cjs"
+		},
 		"./dates": {
 			"types": "./dist/dates/index.d.ts",
 			"import": "./dist/dates/index.js",
 			"require": "./dist/dates/index.cjs"
+		},
+		"./is": {
+			"types": "./dist/is/index.d.ts",
+			"import": "./dist/is/index.js",
+			"require": "./dist/is/index.cjs"
 		},
 		"./objects": {
 			"types": "./dist/objects/index.d.ts",
@@ -104,8 +117,14 @@
 			"collections": [
 				"./dist/collections/index.d.ts"
 			],
+			"colors": [
+				"./dist/colors/index.d.ts"
+			],
 			"dates": [
 				"./dist/dates/index.d.ts"
+			],
+			"is": [
+				"./dist/is/index.d.ts"
 			],
 			"objects": [
 				"./dist/objects/index.d.ts"
