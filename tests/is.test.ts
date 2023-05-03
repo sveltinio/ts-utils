@@ -11,7 +11,12 @@ import {
 	isDate,
 	isRegExp,
 	isDefined,
-	isEmpty
+	isEmpty,
+	isFunction,
+	isPlainObject,
+	isNullish,
+	isUndefined,
+	isNull
 } from '../src/is/index.js';
 
 describe('isBool', () => {
@@ -70,10 +75,40 @@ describe('isObject', () => {
 		expect(isObject({})).toBe(true);
 		expect(isObject({ message: 'hello' })).toBe(true);
 		expect(isObject([1, 2, 3])).toBe(true);
-		expect(isObject(() => {})).toBe(true);
 
+		expect(isObject(() => {})).toBe(false);
 		expect(isObject(true)).toBe(false);
 		expect(isObject(10)).toBe(false);
+	});
+});
+
+describe('isPlainObject', () => {
+	test('various types', () => {
+		expect(isPlainObject({})).toBe(true);
+		expect(isPlainObject({ a: 1 })).toBe(true);
+		expect(isPlainObject(new Object())).toBe(true);
+		expect(isPlainObject(Object.create(null))).toBe(true);
+		expect(isPlainObject(undefined)).toBe(false);
+		expect(isPlainObject(null)).toBe(false);
+		expect(isPlainObject(1)).toBe(false);
+		expect(isPlainObject('a')).toBe(false);
+		expect(isPlainObject(false)).toBe(false);
+		expect(isPlainObject([])).toBe(false);
+		expect(isPlainObject(new Array())).toBe(false);
+		expect(isPlainObject(() => {})).toBe(false);
+		expect(isPlainObject(function () {})).toBe(false);
+		expect(isPlainObject(Symbol())).toBe(false);
+	});
+});
+
+describe('isFunction', () => {
+	test('various types', () => {
+		expect(isFunction(() => {})).toBe(true);
+
+		expect(isFunction({ message: 'hello' })).toBe(false);
+		expect(isFunction([1, 2, 3])).toBe(false);
+		expect(isFunction(true)).toBe(false);
+		expect(isFunction(10)).toBe(false);
 	});
 });
 
@@ -127,6 +162,30 @@ describe('isRegExp', () => {
 		expect(isRegExp(true)).toBe(false);
 		expect(isRegExp('hello')).toBe(false);
 		expect(isRegExp(10)).toBe(false);
+	});
+});
+
+describe('isNullish', () => {
+	test('various types', () => {
+		expect(isNullish(null)).toBe(true);
+		expect(isNullish(undefined)).toBe(true);
+		expect(isNullish(10)).toBe(false);
+	});
+});
+
+describe('isNull', () => {
+	test('various types', () => {
+		expect(isNull(null)).toBe(true);
+		expect(isNull(undefined)).toBe(false);
+		expect(isNull(10)).toBe(false);
+	});
+});
+
+describe('isUndefined', () => {
+	test('various types', () => {
+		expect(isUndefined(undefined)).toBe(true);
+		expect(isUndefined(null)).toBe(false);
+		expect(isUndefined(10)).toBe(false);
 	});
 });
 

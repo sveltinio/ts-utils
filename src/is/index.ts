@@ -1,15 +1,15 @@
 /**
- * A bunch of utilities helping with {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values | primitive} values and basic objects.
+ * A bunch of type guard utilities helping with {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values | primitive} values and basic objects.
  *
  * @packageDocumentation
  */
 
 /**
- * The function checks if a given value is a boolean.
+ * Checks if a given value is of boolean type and has a value of `true` or `false`.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a boolean, `false` otherwise.
+ * @typeParam T - The expected type of the boolean value.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is of boolean type and has a value of `true` or `false`, `false` otherwise.
  *
  * @example
  * ```
@@ -20,21 +20,16 @@
  * // => false
  * ```
  */
-export function isBool<T>(value: T): value is T {
-	return (
-		isDefined(value) &&
-		typeof value === 'boolean' &&
-		value.constructor === Boolean &&
-		(value === true || value === false)
-	);
+export function isBool<T extends boolean>(value: unknown): value is T {
+	return typeof value === 'boolean' && (value === true || value === false);
 }
 
 /**
- * The function checks if a given value is a number.
+ * Checks if a given value is of number type.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a number, `false` otherwise.
+ * @typeParam T - The expected type of the number value.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is of number type, `false` otherwise.
  *
  * @example
  * ```
@@ -45,16 +40,16 @@ export function isBool<T>(value: T): value is T {
  * // => false
  * ```
  */
-export function isNumber<T>(value: T): value is T {
-	return isDefined(value) && typeof value === 'number' && value.constructor === Number;
+export function isNumber<T extends number>(value: unknown): value is T {
+	return typeof value === 'number';
 }
 
 /**
- * The function checks if a given value is a bigint.
+ * Checks if a given value is of `bigint` type.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a bigint, `false` otherwise.
+ * @typeParam T - The expected type of the value.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is of `bigint` type, `false` otherwise.
  *
  * @example
  * ```
@@ -68,16 +63,16 @@ export function isNumber<T>(value: T): value is T {
  * // => false
  * ```
  */
-export function isBigInt<T>(value: T): value is T {
-	return isDefined(value) && typeof value === 'bigint' && value.constructor === BigInt;
+export function isBigInt<T extends bigint>(value: unknown): value is T {
+	return typeof value === 'bigint';
 }
 
 /**
- * The function checks if a given value is a string.
+ * Checks if a given value is of `string` type.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a string, `false` otherwise.
+ * @typeParam T - The expected string literal type.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is of `string` type, `false` otherwise.
  *
  * @example
  * ```
@@ -88,16 +83,18 @@ export function isBigInt<T>(value: T): value is T {
  * // => false
  * ```
  */
-export function isString<T>(value: T): value is T {
-	return isDefined(value) && typeof value === 'string' && value.constructor === String;
+export function isString<T extends string>(value: unknown): value is T {
+	return typeof value === 'string';
 }
 
 /**
- * The function checks if a given value is an array.
+ * Checks if a given value is an array.
  *
- * @typeParam  value - The value to check.
+ * @remarks This function is equivalent to `Array.isArray`.
  *
- * @returns Returns `true` if `value` is an array, `false` otherwise.
+ * @typeParam T - The element type of the array.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is an array, `false` otherwise.
  *
  * @example
  * ```
@@ -109,15 +106,15 @@ export function isString<T>(value: T): value is T {
  * ```
  */
 export function isArray<T>(value: T): value is T {
-	return isDefined(value) && Array.isArray(value);
+	return Array.isArray(value);
 }
 
 /**
- * The function checks if a given value is an objet.
+ * Checks if a given value is an object.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is an object, `false` otherwise.
+ * @typeParam T - The type of the object.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is an object, `false` otherwise.
  *
  * @example
  * ```
@@ -132,15 +129,95 @@ export function isArray<T>(value: T): value is T {
  * ```
  */
 export function isObject<T>(value: T): value is T {
-	return isDefined(value) && (typeof value === 'object' || typeof value === 'function');
+	return typeof value === 'object' && typeof value !== 'function';
 }
 
 /**
- * The function checks if a given value is a symbol.
+ * Checks if a given value is a plain JavaScript object.
  *
- * @typeParam  value - The value to check.
+ * @remarks
+ * A plain object is defined as an object whose prototype is either `null` or `Object.prototype`.
  *
- * @returns Returns `true` if `value` is a symbol, `false` otherwise.
+ * @typeParam T - The expected type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the value is a plain JavaScript object, `false` otherwise.
+ *
+ * @example
+ * ```
+ * isPlainObject({})
+ * // => true
+ *
+ * isPlainObject({ a: 1 })
+ * // => true
+ *
+ * isPlainObject(new Object())
+ * // => true
+ *
+ * isPlainObject(Object.create(null))
+ * // => true
+ *
+ * isPlainObject(undefined)
+ * // => false
+ *
+ * isPlainObject(null)
+ * // => false
+ *
+ * isPlainObject(1)
+ * // => false
+ *
+ * isPlainObject('a')
+ * // => false
+ *
+ * isPlainObject(false)
+ * // => false
+ *
+ * isPlainObject([])
+ * // => false
+ *
+ * isPlainObject(() => {})
+ * // => false
+ * ```
+ */
+export function isPlainObject<T extends object = object>(value: unknown): value is T {
+	if (!isDefined(value) || typeof value !== 'object' || value === null || Array.isArray(value)) {
+		return false;
+	}
+
+	const proto = Object.getPrototypeOf(value);
+	return proto === null || proto === Object.prototype;
+}
+
+/**
+ * Checks if a given value is of function type.
+ *
+ * @remarks This function is only intended to be used with functions that have a known return type.
+ * It may not work correctly with functions that return a generic type.
+ * @param value - The value to be checked.
+ * @typeParam T - The expected return type of the function.
+ *  @returns Returns `true` if the value is a function, `false` otherwise.
+ *
+ * @example
+ * ```
+ * isFunction(()=> {})
+ * // => true
+ *
+ * isFunction({})
+ * // => false
+ *
+ * isObject(['hello', 'world])
+ * // => true
+ * ```
+ */
+export function isFunction(value: unknown): value is (...args: any[]) => any {
+	return typeof value === 'function';
+}
+
+/**
+ * Checks if a given value is of type `symbol`.
+ *
+ * @typeParam T - The expected symbol type.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is of type `symbol`, `false` otherwise.
  *
  * @example
  * ```
@@ -154,45 +231,16 @@ export function isObject<T>(value: T): value is T {
  * // => false
  * ```
  */
-export function isSymbol<T>(value: T): value is NonNullable<T> {
+export function isSymbol<T extends symbol>(value: unknown): value is T {
 	return typeof value === 'symbol';
 }
 
 /**
- * The function checks if a given value is a {@link https://developer.mozilla.org/en-US/docs/Glossary/Truthy| truthy} value.
+ * Checks if a given value is a valid `Date` object.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a truthy value, `false` otherwise.
- *
- * @example
- * ```
- * isTruthy(true)
- * // => true
- *
- * isTruthy([])
- * // => true
- *
- * isTruthy({})
- * // => true
- *
- * isTruthy(false)
- * // => false
- *
- * isTruthy(on)
- * // => false
- * ```
- */
-export function isTruthy<T>(v: T): v is NonNullable<T> {
-	return Boolean(v);
-}
-
-/**
- * The function checks if a given value is a date.
- *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a date, `false` otherwise.
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is a `Date` object, `false` otherwise.
  *
  * @example
  * ```
@@ -206,22 +254,16 @@ export function isTruthy<T>(v: T): v is NonNullable<T> {
  * // => false
  * ```
  */
-export function isDate<T>(value: T): value is T {
-	return (
-		isDefined(value) &&
-		isObject(value) &&
-		value instanceof Date &&
-		typeof value.getTime === 'function' &&
-		Object.prototype.toString.call(value) === '[object Date]'
-	);
+export function isDate<T>(value: T): value is Extract<T, Date> {
+	return value instanceof Date;
 }
 
 /**
- * The function checks if a given value is a RegExp object.
+ * Checks if a given value is a valid `RegExp` object.
  *
- * @typeParam  value - The value to check.
- *
- * @returns Returns `true` if `value` is a RegExp object, `false` otherwise.
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the given value is a `RegExp` object, `false` otherwise.
  *
  * @example
  * ```
@@ -231,29 +273,23 @@ export function isDate<T>(value: T): value is T {
  * isRegExp(new RegExp("ab+c", "i"))
  * // => true
  *
+ * isRegExp('/test/')
+ * // => false
+ *
  * isRegExp(10)
  * // => false
  * ```
  */
-export function isRegExp<T>(value: T): value is T {
-	return (
-		isDefined(value) &&
-		isObject(value) &&
-		value instanceof RegExp &&
-		typeof value.test === 'function' &&
-		Object.prototype.toString.call(value) === '[object RegExp]'
-	);
+export function isRegExp<T extends RegExp = RegExp>(value: unknown): value is T {
+	return value instanceof RegExp;
 }
 
 /**
- * The function checks if a given value is defined and not null.
- * It uses a type guard to narrow down the type of the input value to `T` if it is defined.
+ * Checks if a given value is defined or not.
  *
- * @typeParam value - The value parameter is a generic type T, which can be any
- * type of value.
- *
- * @returns A boolean value indicating whether the input value is defined (not undefined or
- * null) or not.
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked for definedness.
+ * @returns `true` if the given value is defined, and `false` otherwise.
  *
  * @example
  * ```
@@ -298,20 +334,117 @@ export function isRegExp<T>(value: T): value is T {
  * ```
  */
 export function isDefined<T>(value: T | undefined | null): value is NonNullable<T> {
-	return (
-		value !== null && typeof value !== 'undefined' && value !== undefined && !Number.isNaN(value)
-	);
+	if (isObject(value) && Array.isArray(value)) {
+		return value.every((v) => !isNullish(v));
+	}
+
+	return !isNull(value) && !isUndefined(value) && !Number.isNaN(value);
 }
 
 /**
- * The function checks if a value is empty or not.
+ * Checks if a given value is a {@link https://developer.mozilla.org/en-US/docs/Glossary/Truthy| truthy} value.
  *
- * @typeParam value - The value parameter is a generic type T, which can be any type of value.
+ * @typeParam T - The type of the value to check.
+ * @param value - The value to be checked.
+ * @returns `true` if the value is truthy and not `null` or `undefined`, `false` otherwise.
  *
- * @returns A boolean value indicating whether the input value is empty or not.
- * If the value is null, undefined, NaN, an empty string, or an object with no keys, the
- * function returns true, indicating that the value is empty. Otherwise, it returns false,
- * indicating that the value is not empty.
+ * @example
+ * ```
+ * isTruthy(true)
+ * // => true
+ *
+ * isTruthy([])
+ * // => true
+ *
+ * isTruthy({})
+ * // => true
+ *
+ * isTruthy(false)
+ * // => false
+ *
+ * isTruthy(on)
+ * // => false
+ * ```
+ */
+export function isTruthy<T>(value: T): value is NonNullable<T> {
+	return !!value;
+}
+
+/**
+ * Checks if a value is null or undefined.
+ *
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the value is null or undefined, `false` otherwise.
+ *
+ * @example
+ * ```
+ * isNullish(null)
+ * // => true
+ *
+ * isNullish(undefined)
+ * // => true
+ *
+ * isNullish(10)
+ * // => false
+ * ```
+ */
+export function isNullish<T>(value: T | null | undefined): value is null | undefined {
+	return value === null || value === undefined;
+}
+
+/**
+ * Checks if a given value is null.
+ *
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the value is undefined, `false` otherwise.
+ *
+ * @example
+ * ```
+ * isNull(null)
+ *   // => true
+ *
+ * isNull(undefined)
+ * // => false
+ *
+ * isNull(10)
+ * // => false
+ * ```
+ */
+export function isNull<T>(value: T | null): value is null {
+	return value === null;
+}
+
+/**
+ * Checks if a given value is undefined.
+ *
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the value is undefined, `false` otherwise.
+ *
+ * @example
+ * ```
+ * isUndefined(null)
+ *   // => false
+ *
+ * isUndefined(undefined)
+ * // => true
+ *
+ * isUndefined(10)
+ * // => false
+ * ```
+ */
+export function isUndefined<T>(value: T | undefined): value is undefined {
+	return value === undefined;
+}
+
+/**
+ * Checks if a given value is empty or not.
+ *
+ * @typeParam T - The type of the input value.
+ * @param value - The value to be checked.
+ * @returns `true` if the given  value is empty, and `false` otherwise.
  *
  * @example
  * ```
@@ -357,7 +490,10 @@ export function isEmpty<T>(value: T): value is T {
 		case 'string':
 			return !value;
 		case 'object':
-			return !Object.keys(value).length;
+			if (Array.isArray(value)) {
+				return value.length === 0;
+			}
+			return Object.keys(value).length === 0;
 		default:
 			return true;
 	}
