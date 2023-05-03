@@ -13,7 +13,7 @@
 	],
 	"plugin": ["typedoc-plugin-coverage", "typedoc-plugin-extras", "typedoc-plugin-keywords"],
 	"keywords": ["typescript", "javascript", "utilities", "helpers", "library"],
-	"titleLink": "https://ts-utils.local:8890",
+	"titleLink": "https://ts-utils.sveltin.io",
 	"searchInComments": true,
 	"githubPages": false,
 	"out": "docs"
