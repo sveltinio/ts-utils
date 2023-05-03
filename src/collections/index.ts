@@ -1,28 +1,96 @@
-import { isEmpty } from '../index.js';
-
-export type sortOrder = 'asc' | 'desc';
+import { Result, err, ok } from 'neverthrow';
+import {
+	isArray,
+	isBool,
+	isDefined,
+	isEmpty,
+	isNullish,
+	isNumber,
+	isString,
+	isUndefined
+} from '../is/index.js';
 
 /**
- * It takes a collection, an iteratee, and an order, and returns a sorted collection by the iteratee.
+ * A bunch of utilities to deal with collections.
  *
- * @param collection - The array to sort.
- * @param iteratee - string- The property to sort by.
- * @param order - string `[order=asc]` - The order in which you want to sort the array.
- * It can be either 'asc' or 'desc'.
- *
- * @returns an array of objects sorted by the iteratee property.
+ * @packageDocumentation
  */
-export function orderBy<T extends Record<PropertyKey, any>>(
-	collection: T[],
-	iteratee: string,
-	order: sortOrder = 'asc'
-): T[] {
-	if (collection == null || isEmpty(collection)) return [];
 
-	const sort = (iteratee: string, arr: T[]) => {
+/**
+ * A type representing a group of items. */
+export type GroupedObject<T> = {
+	group: string;
+	items: T[] | Partial<T>[];
+};
+
+/**
+ * Sorts an array of objects by a given property in ascending or descending order.
+ *
+ * @remarks
+ * This function does not mutate the input array.
+ *
+ * @typeParam T - The type of the objects in the array.
+ * @param arr -The array of objects to sort.
+ * @param iteratee - The property to sort the objects by. Can be a dot-separated string to group
+ * by a nested property, e.g. "prop1.prop2".
+ * @param order - The order to sort the objects in. Defaults to 'asc'. 'desc' for descending order.
+ * @returns A `Result` object containing the sorted array on success, or an `Error` object on
+ * failure.
+ *
+ * @throws If the input array is null, undefined, or empty.
+ * @throws If the specified property to sort by does not exist in one or more of the objects
+ * in the array.
+ *
+ * @example
+ * Sort by age in ascending order:
+ * ```typescript
+ * const users = [
+ *   { name: 'John', age: 30 },
+ *   { name: 'Alice', age: 25 },
+ *   { name: 'Bob', age: 40 }
+ * ];
+ *
+ * sortBy(users, 'age', 'asc')
+ * // => { ok: true, value: [{ name: 'Bob', age: 20 }, { name: 'John', age: 25 }, { name: 'Alice', age: 30 }] }
+ *```
+ *
+ * @example
+ * Sort by name in descending order:
+ * ```typescript
+ * sortBy(arr, 'name', 'desc')
+ * // => { ok: true, value: [{ name: 'John', age: 25 }, { name: 'Bob', age: 20 }, { name: 'Alice', age: 30 }] }
+ *```
+ *
+ * @example
+ * Sort by a nested property:
+ * ```typescript
+ * const arr2 = [
+ *   { name: 'John', address: { city: 'New York', state: 'NY' } },
+ *   { name: 'Alice', address: { city: 'Los Angeles', state: 'CA' } },
+ *   { name: 'Bob', address: { city: 'San Francisco', state: 'CA' } }
+ * ];
+ *
+ * sortBy(arr2, 'address.state', 'asc');
+ * // => { ok: true, value: [{ name: 'Alice', address: { city: 'Los Angeles', state: 'CA' } }, { name: 'Bob', address: { city: 'San Francisco', state: 'CA' } }, { name: 'John', address: { city: 'New York', state: 'NY' } }] }
+ * ```
+ */
+export function sortBy<const T extends Record<PropertyKey, any>>(
+	arr: T[],
+	iteratee: string,
+	order: 'asc' | 'desc' = 'asc'
+): Result<T[], Error> {
+	if (!isDefined(arr) || isEmpty(arr)) {
+		return err(new Error('[collections.sortBy] Input must be an array and cannot be empty'));
+	}
+
+	if (!isString(iteratee)) {
+		return err(new Error('[collections.sortBy] Expected string value for the iteratee parameter'));
+	}
+
+	const sort = (arr: T[], iteratee: string) => {
 		const propsArray = iteratee.split('.');
 
-		if (typeof propsArray === 'undefined') return [];
+		if (isUndefined(propsArray)) return [];
 
 		arr.sort(function (a: any, b: any) {
 			propsArray.map((prop: string) => {
@@ -38,247 +106,447 @@ export function orderBy<T extends Record<PropertyKey, any>>(
 		return arr;
 	};
 
-	return sort(iteratee, collection);
+	return ok(sort(arr, iteratee));
 }
 
 /**
- * It takes a collection of objects, groups them by a property, and returns an array of objects with
- * the grouped items.
+ * Groups an array of objects by a single key and returns an array of GroupedObjects.
  *
- * @param property - string - The property to group by. It can be a dot notation path.
- * @param collection - The array of objects to be grouped.
- * @param filteredProps - string[] = [] - The object properties you want back. Default, all.
- * @param destruct - boolean - `true` - if true, the function will return a new object with only the
- * properties specified in the filteredProps array.
+ * @typeParam T - The type of objects in the input array.
+ * @param arr - The input array to group.
+ * @param key - The key to group the objects by. Can be a dot-separated string to group by nested properties.
+ * @param includedProps - An optional array of properties to include in the grouped objects. If specified, only these properties will be included. Defaults to an empty array (all properties will be included).
+ * @returns An array of GroupedObjects, each containing a group name and an array of grouped items.
  *
- * @returns An array of objects with the following structure:
- * \{
- * 	name: string,
- * 	items: any[]
- * \}
+ * @example
+ * ```typescript
+ * const arr = [
+ *   { id: 1, name: 'Alice', age: 30 },
+ *   { id: 2, name: 'Bob', age: 25 },
+ *   { id: 3, name: 'Charlie', age: 30 }
+ * ];
+ *
+ * groupedByOne(arr, 'age', ['name']);
+ * // => { ok: true, value:
+ * // [
+ * //   { group: '30', items: [{ name: 'Alice' }, { name: 'Charlie' }] },
+ * //   { group: '25', items: [{ name: 'Bob' }] }
+ * // ]
+ * ```
+ *
+ * @example
+ * Handle an invalid input:
+ * ```typescript
+ * const emptyArr = [];
+ * groupedByOne(emptyArr, 'age');
+ * // => { ok: false, error: Error('[collections.groupedByOne] Input must be an array and cannot be empty') }
+ * ```
  */
 export function groupedByOne<T extends Record<PropertyKey, any>>(
-	property: string,
-	collection: T[],
-	filteredProps: string[] = [],
-	destruct = true
-): Record<PropertyKey, any>[] {
-	if (collection == null || isEmpty(collection)) return [];
+	arr: T[],
+	key: string,
+	propertiesToInclude?: Array<keyof T>
+): Result<GroupedObject<T>[], Error> {
+	if (!isArray(arr) || isEmpty(arr)) {
+		return err(new Error('[collections.groupedByOne] Input must be an array and cannot be empty'));
+	}
 
-	const grouped: T[] = [];
-	const obj: any = {};
-	const propsArray = property.split('.');
+	if (!isString(key)) {
+		return err(new Error('[collections.groupedByOne] Expected string value for the key parameter'));
+	}
 
-	Array.from(collection).forEach((elem) => {
-		const props = propsArray.reduce(function (acc, prop) {
-			return acc && acc[prop];
-		}, elem as any);
-
-		if (typeof props === 'undefined') return [];
-
-		if (!(props in obj)) {
-			obj[props] = { name: props, items: [] };
-			grouped.push(obj[props]);
+	if (isDefined(propertiesToInclude)) {
+		if (!isArray(propertiesToInclude)) {
+			return err(
+				new Error('[collections.groupedByOne] Expected array for the key propertiesToInclude')
+			);
 		}
+	}
 
-		const result = makeResultObj(elem, filteredProps, destruct);
+	const collection = Array.from(arr);
+	const groups = collection.reduce((grouped: Record<string, T[]>, item: any) => {
+		const groupKey = key.split('.').reduce((obj, prop) => obj?.[prop], item);
 
-		obj[props].items.push(result);
+		const stringKey = String(groupKey);
+		if (!grouped[stringKey]) {
+			grouped[stringKey] = [];
+		}
+		grouped[stringKey].push(item as T);
+
+		return grouped;
+	}, {});
+
+	function mapToGroupedObject([group, items]: [string, T[]]): GroupedObject<T> {
+		return {
+			group,
+			items: items.map((item) => getIncludedProps(item, propertiesToInclude))
+		};
+	}
+
+	const grouped = Object.entries(groups).map(mapToGroupedObject);
+	return ok(grouped);
+}
+
+/**
+ * Groups an array of objects by a given property and returns an array of objects
+ * with a `group` key and an array of grouped objects as its `items` value.
+ *
+ * @remarks
+ * The resulting objects in the `items` array will only contain properties that are
+ * listed in the `includedProps` array. If `destruct` is set to true, the original
+ * objects in the `items` array will be destructed and only the filtered properties
+ * will remain.
+ *
+ * @typeParam T - The type of the objects in the input array.
+ * @param arr - The array of objects to group.
+ * @param property - The property or properties to group the objects by. Use dot notation
+ * to group by nested properties.
+ * @param includedProps - An optional array of properties to include from the original objects
+ * before grouping them.
+ * @returns A `Result` object containing an array of objects representing the groups and their
+ * items, or an error if the input is not valid.
+ * @example
+ * Example usage, grouping by country and age, destruct name property
+ * ```typescript
+ * const input = [
+ *   { name: 'John', age: 30, country: 'USA' },
+ *   { name: 'Alice', age: 25, country: 'Canada' },
+ *   { name: 'Bob', age: 35, country: 'USA' },
+ *   { name: 'Eve', age: 28, country: 'Canada' }
+ * ];
+ *
+ * groupedByMany(input, 'country.age', ['name'], true)
+ * // =>
+ * // { ok: true, value:
+ * //   [
+ * //     { group: 'USA.30', items: [{ age: 30 }] },
+ * //     { group: 'Canada.25', items: [{ age: 25 }] },
+ * //     { group: 'USA.35', items: [{ age: 35 }] },
+ * //     { group: 'Canada.28', items: [{ age: 28 }] }
+ * //   ]
+ * // }
+ *```
+ */
+export function groupedByMany<T>(
+	arr: T[],
+	key: string,
+	propertiesToInclude?: Array<keyof T>
+): Result<GroupedObject<T>[], Error> {
+	if (!isDefined(arr) || isEmpty(arr)) {
+		return err(new Error('[collections.groupedByMany] Input must be an array and cannot be empty'));
+	}
+
+	if (!isString(key)) {
+		return err(
+			new Error('[collections.groupedByMany] Expected string value for the key parameter')
+		);
+	}
+
+	if (isDefined(propertiesToInclude)) {
+		if (!isArray(propertiesToInclude)) {
+			return err(
+				new Error('[collections.groupedByMany] Expected array for the key propertiesToInclude')
+			);
+		}
+	}
+
+	const collection = arr as T[];
+	const groups: Record<string, T[]> = {};
+
+	// If propValue is not an array, it will create an array with a single item
+	// and push the obj into the corresponding group.
+	collection.forEach((obj) => {
+		const propValue = getProperty(obj, key);
+		const values = Array.isArray(propValue) ? propValue : [propValue];
+		values.forEach((value) => {
+			const groupKey = String(value);
+			groups[groupKey] = groups[groupKey] || [];
+			groups[groupKey].push(obj);
+		});
 	});
 
-	return grouped;
+	function mapToGroupedObject([group, items]: [string, T[]]): GroupedObject<T> {
+		return {
+			group,
+			items: items.map((item) => getIncludedProps(item, propertiesToInclude))
+		};
+	}
+
+	const grouped = Object.entries(groups).map(mapToGroupedObject);
+
+	return ok(grouped);
 }
 
 /**
- * It takes a collection of objects, a property name, and an array of properties to filter out, and
- * returns a new array of objects with the property name as the key and the filtered properties as
- * the value.
+ * Shuffles an input array and returns a copy of it.
+ * Uses the modern Fisher-Yates shuffle algorithm to generate a random permutation
+ * of the input array.
  *
- * @param property - The property to group by. It can be a dot notation path.
- * @param collection - The array of objects to be grouped.
- * @param filteredProps - string[] = []. The object properties you want back. Default, all.
- * @param destruct - boolean - `true` - if true, the function will return a new object with only the
- * properties specified in the filteredProps array.
+ * @remarks The input array is not modified.
  *
- * @returns An array of objects with the following structure:
- * \{
- * 	name: string,
- * 	items: any[]
- * \}
+ * @typeParam T - The type of the elements in the array.
+ * @param arr - The array to shuffle.
+ * @returns A Result object with either the shuffled array if `ok`, or an `Error` object if the
+ * provided input is not an array
+ *
+ * @example
+ * ```typescript
+ * shuffle(['foo', 'bar', 'baz'])
+ * // => { ok: true, value: shuffled copy of the array }
+ * ```
+ *
+ * @example
+ * Handle an invalid input:
+ * ```typescript
+ * shuffle('not an array')
+ * // => { ok: false, value: error: Error('[collections.shuffle] Input is not an array') }
+ * ```
  */
-export function groupedByMany<T extends Record<PropertyKey, any>>(
-	property: string,
-	collection: T[],
-	filteredProps: string[] = [],
-	destruct = true
-): Record<PropertyKey, any>[] {
-	if (collection == null || isEmpty(collection)) return [];
+export function shuffle<const T extends number | string | boolean>(arr: T[]): Result<T[], Error> {
+	if (!isArray(arr)) {
+		return err(new Error('[collections.shuffle] Input is not an array.'));
+	}
 
-	const propsArray = property.split('.');
+	if (arr.some((value) => isNullish(value))) {
+		return err(
+			new Error('[collections.shuffle] Input array cannot contains null or undefined valyues.')
+		);
+	}
 
-	const res = Array.from(collection).reduce((acc, curr) => {
-		const props = propsArray.reduce(function (propsAccumulator, currProp) {
-			return propsAccumulator && propsAccumulator[currProp];
-		}, curr as any);
+	for (let i = 0; i < arr.length; i++) {
+		const randomIndex = Math.floor(Math.random() * arr.length);
+		[arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
+	}
 
-		if (typeof props === 'undefined') return [];
-
-		Array.from(props).forEach((prop: any) => {
-			let result: Record<string, any> = {};
-			if (typeof prop !== 'undefined' && !(prop in curr)) {
-				result = makeResultObj(curr, filteredProps, destruct);
-			}
-
-			if (acc[prop]) {
-				acc[prop].push(result);
-			} else {
-				acc[prop] = [result];
-			}
-		});
-		return acc;
-	}, {} as Record<PropertyKey, any>[]);
-
-	const grouped = Object.entries(res);
-	return grouped.map(([name, items]) => ({ name, items }));
+	return ok([...arr]);
 }
 
 /**
- * The function picks a random value from an array of numbers, strings, or booleans.
+ * Shuffles an array of plain JavaScript objects by the specified property.
  *
- * @param {T[]} values - An array of values of type number, string, or boolean from which a random
- * value will be picked.
+ * @remarks
+ * This function creates a shallow copy of the input array and sorts the resulting array by the specified property.
  *
- * @returns Returns a random element of the input array `values`. The type of the returned value is * the same as the type of the elements in the input array, which can be `number`, `string`, or
- * `boolean`.
+ * @typeParam T - The type of objects in the input array.
+ * @typeParam K - The type of the property used for sorting the input array.
+ * @param arr - The array to shuffle.
+ * @param key - The property to use for sorting the array.
+ * @returns A `Result` object with either the shuffled array, or an `Error` object if the input is invalid.
+ *
+ * @example
+ * Shuffle an array of objects by the "name" property
+ * ```typescript
+ * const people = [
+ *   { name: 'Alice', age: 30 },
+ *   { name: 'Bob', age: 25 },
+ *   { name: 'Charlie', age: 35 }
+ * ];
+ *
+ * shuffleByProperty(people, 'name');
+ * // => { ok: true, value: [{ name: 'Bob', age: 25 }, { name: 'Charlie', age: 35 }, { name: 'Alice', age: 30 }] }
+ * ```
+ *
+ * @example
+ * Handle an invalid input:
+ * ```typescript
+ * shuffleByProperty('not an array')
+ * // => { ok: false, value: error: Error('[collections.shuffleByProperty] Input is not an array') }
+ * ```
  */
-export function pickRandom<T extends number | string | boolean>(values: T[]): T {
-	return values[Math.floor(Math.random() * values.length)];
+export function shuffleByProperty<T, K extends keyof T>(arr: T[], key: K): Result<T[], Error> {
+	if (!isArray(arr)) {
+		return err(new Error('[collections.shuffleObjectsByProperty] Input is not an array.'));
+	}
+
+	if (arr.some((value) => isNullish(value) || isNullish(value[key]))) {
+		return err(
+			new Error('[collections.shuffleObjectsByProperty] All array elements must be defined.')
+		);
+	}
+
+	const newArr = arr.map((obj) => obj);
+	for (let i = 0; i < newArr.length; i++) {
+		const randomIndex = Math.floor(Math.random() * newArr.length);
+		[newArr[i], newArr[randomIndex]] = [newArr[randomIndex], newArr[i]];
+	}
+
+	return ok(newArr);
 }
 
 /**
- * The function checks if a given value is present in a collection of numbers or strings.
+ * Returns a random element or an array of random elements from an input array
+ * without modifying the original array.
+ * Only elements of type `number`, `string`, or `boolean` are considered valid.
  *
- * @param {T[]} collection - An array of values of type `number` or `string`.
- * @param {T} value - The value parameter is of type T, which extends either number or string. It
- * represents the value that we want to check if it exists in the collection.
+ * @typeParam T - The type of the elements in the input array.
+ * @param arr - The input array from which to select random elements.
+ * @param quantity - Optional. The number of random elements to return. Defaults to 1.
+ * @returns A `Result` object with either the selected random element(s), or an `Error` object if
+ * the provided input is not an array.
+ *
+ * @example
+ * ```typescript
+ * const input1 = [1, 2, 3, 4, 5];
+ * const result1 = pickRandom(input1); // ok
+ * const result2 = pickRandom(input1, 2); // ok
+ *
+ * const input3 = ["apple", "banana", "cherry", "date"];
+ * const result3 = pickRandom(input3, 3); // ok
+ *
+ * const input4 = [true, false, undefined, null];
+ * const result4 = pickRandom(input4, 1); // err
+ *
+ * const input5 = [1, 2, 3, 4, 5];
+ * const result5 = pickRandom(input5, 3); // ok
+ *
+ * const input6 = ["a", "b", "c", "d", "e"];
+ * const result6 = pickRandom(input6, 2); // ok
+ * ```
+ */
+export function pickRandom<T extends number | string | boolean>(
+	arr: T[],
+	quantity = 1
+): Result<T | T[], Error> {
+	if (!isArray(arr)) {
+		return err(new Error('[collections.pickRandom] Input is not an array.'));
+	}
+
+	if (!arr.every(isNumber) && !arr.every(isString) && !arr.every(isBool)) {
+		return err(
+			new Error(
+				'[collections.pickRandomValues] Input array can contains numbers, strings and booleans only.'
+			)
+		);
+	}
+
+	if (!isNumber(quantity)) {
+		return err(new Error('[collections.pickRandom] quantity param must be a number.'));
+	}
+
+	// Create a copy of the input array to avoid modifying the original array
+	return shuffle(arr).map((shuffled) => {
+		return quantity === 1 ? shuffled[0] : shuffled.slice(0, quantity);
+	});
+}
+
+/**
+ * Checks if a given value exists in a collection (array) of values.
+ *
+ * @typeParam T - The type of the elements in the input array.
+ * @param arr - The array of values of type `number` or `string` to search.
+ * @param value - The value to check for existence in the collection.
  *
  * @returns A boolean value indicating whether the given value is present in the given collection.
+ *
+ * @example
+ * ```typescript
+ * contains(['apple', 'banana', 'cherry'], 'banana'))
+ * // => true
+ *
+ * contains(['apple', 'banana', 'cherry'], 'orange'))
+ * // => false
+ *
+ * contains([1, 2, 3], 4)
+ * // => false
+ *
+ * contains("not an array")
+ * // => false
+ * ```
  */
-export function contains<T extends number | string>(collection: T[], value: T): boolean {
-	const tmpRes = Array.from(collection).includes(value);
-	return typeof value == 'number' ? tmpRes : !isEmpty(value) && tmpRes;
+export function contains<T extends number | string>(arr: T[], value: T): value is T {
+	if (!isArray(arr)) return false;
+
+	if (!arr.every(isNumber) && !arr.every(isString)) return false;
+
+	const tmpRes = Array.from(arr).includes(value);
+	return isNumber(value) ? tmpRes : !isEmpty(value) && tmpRes;
+}
+
+/**
+ * Removes duplicates from an array of numbers or strings.
+ *
+ * @typeParam T - The type of the elements in the input array.
+ * @param arr - The array to remove duplicates from.
+ * @returns A `Result` object with either an array with the duplicates removed, or an `Error`
+ * object if the provided input is not an array.
+ *
+ * @example
+ * ```typescript
+ * const arr1 = [1, 2, 3, 2, 1]
+ * uniq(arr1)
+ * // => { ok: true, value: [1, 2, 3] }
+ *
+ * const arr2 = ['apple', 'banana', 'cherry', 'banana', 'apple']
+ * uniq(arr2).value
+ * // => { ok: true, value: ['apple', 'banana', 'cherry'] }
+ * ```
+ *
+ * @example
+ * Handle an invalid input:
+ * ```typescript
+ * uniq('not an array')
+ * // => { ok: false, value: error: Error('[collections.uniq] Input is not an array') }
+ * ```
+ */
+export function uniq<T extends number | string>(arr: T[]): Result<T[], Error> {
+	if (!isArray(arr)) {
+		return err(new Error('[collections.uniq] Input must be an array.'));
+	}
+
+	const uniqSet = new Set<T>(arr);
+	return ok(Array.from(uniqSet));
+}
+
+/**
+ * Gets the value of a property on an object.
+ *
+ * @typeParam T - The type of the object to get the property from.
+ * @param obj - The object to get the property from.
+ * @param prop - The property key to get the value of.
+ * @returns The value of the property, or `undefined` if it doesn't exist.
+ *
+ * @example
+ * ```typescript
+ * const obj = { a: { b: 123 } };
+ * getProperty(obj, 'a.b');
+ * // =>  123
+ *
+ * const obj2 = { a: { b: null } };
+ * getProperty(obj2, 'a.b.c');
+ * //  => undefined
+ * ```
+ */
+export function getProperty<T>(obj: T, prop: PropertyKey): any {
+	const parts = String(prop).split('.');
+	let value: any = obj;
+	for (const part of parts) {
+		if (value == null) {
+			return undefined;
+		}
+		value = value[part];
+	}
+	return value;
 }
 
 // --------------------------------------------------------------------------------------
 
 /**
- * It takes an object and an array of strings, and returns a new object with only the properties
- * specified in the array.
+ * Returns a partial object containing only the specified properties from the input object.
+ * If no properties are specified, returns a shallow copy of the input object.
  *
- * @param originalObj - The original object that you want to filter.
- * @param filteredProps - string[] = []. The object properties you want back. Default, all.
- * @param destruct - boolean - If true, the function will return a destructed object otherwise the original object structure will be preserved.
- *
- * @returns A function that takes in an object, an array of strings, and a boolean.
+ * @typeParam T - The type of the input object.
+ * @param item - The input object to extract properties from.
+ * @param propertiesToInclude - An optional array of property names to include in the returned object.
+ * @returns A partial object containing the specified properties of the input object.
  */
-function makeResultObj(
-	originalObj: Record<string, any>,
-	filteredProps: string[],
-	destruct: boolean
-): Record<PropertyKey, any> {
-	let result: Record<PropertyKey, any> = {};
-
-	switch (isEmpty(filteredProps)) {
-		case false:
-			result = destruct
-				? destructObj(originalObj, filteredProps)
-				: asIsObjStructure(originalObj, filteredProps);
-			break;
-		default:
-			result = originalObj;
-			break;
+function getIncludedProps<T>(item: T, propertiesToInclude?: Array<PropertyKey>): Partial<T> {
+	if (propertiesToInclude && propertiesToInclude.length > 0) {
+		const includedProps: Partial<T> = {};
+		propertiesToInclude.forEach((prop) => {
+			includedProps[prop as keyof T] = item[prop as keyof T];
+		});
+		return includedProps;
+	} else {
+		return item;
 	}
-
-	return result;
-}
-
-/**
- * It takes an array of strings and an object, and returns a new object
- * with the properties specified in the array.
- *
- * @param originalObj - The object to destruct.
- * @param props - An array of strings representing the properties to destruct.
- *
- * @returns An object with the properties that are passed in as props.
- */
-function destructObj(
-	originalObj: Record<PropertyKey, any>,
-	props: string[]
-): Record<PropertyKey, any> {
-	return props.reduce((obj, prop) => {
-		const selectors = prop.split('.');
-		const propName = selectors[selectors.length - 1];
-
-		obj[propName] = getPropValue(originalObj, prop).pop();
-		return obj;
-	}, {} as Record<string, any>);
-}
-
-/**
- * It takes an array of strings and an object, and returns a new object with only the properties
- * specified in the array.
- *
- * @param originalObj - The original object you want to get the properties from.
- * @param props - An array of strings that represent the properties to get
- * from the original object.
- *
- * @returns An object with the properties that are passed in as props.
- */
-function asIsObjStructure(
-	originalObj: Record<PropertyKey, any>,
-	props: string[]
-): Record<PropertyKey, any> {
-	return props.reduce((resultObj: Record<PropertyKey, any>, currentProp: string) => {
-		if (!currentProp.includes('.')) {
-			resultObj[currentProp] = originalObj[currentProp];
-			return resultObj;
-		}
-
-		const keys = currentProp.split('.');
-		const lastKey = keys.pop();
-
-		const lastObj = keys.reduce((acc: Record<PropertyKey, any>, key: string) => {
-			// Create an object at this key if it doesn't exist yet
-			if (!acc[key]) {
-				acc[key] = {};
-			}
-			return acc[key];
-		}, resultObj);
-
-		if (lastKey != undefined) {
-			lastObj[lastKey] = getPropValue(originalObj, currentProp);
-		}
-		return resultObj;
-	}, {} as Record<PropertyKey, any>);
-}
-
-/**
- * It takes an object and a list of selectors, and returns an array of the values of the object
- * that correspond to the selectors
- *
- * - Credits to: https://www.30secondsofcode.org/js/s/get
- *
- * @param from - The object to get the property from.
- * @param selectors - An array of strings that are the selectors to get the property from.
- *
- * @returns An array of values from the object.
- */
-function getPropValue(from: Record<PropertyKey, any>, ...selectors: string[]) {
-	return [...selectors].map((s) =>
-		s
-			.replace(/\[([^[\]]*)\]/g, '.$1.')
-			.split('.')
-			.filter((t) => t !== '')
-			.reduce((prev, cur) => prev && prev[cur], from)
-	);
 }
