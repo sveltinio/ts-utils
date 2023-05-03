@@ -1,81 +1,297 @@
-import { Ok, Err, ok, err } from 'neverthrow';
+/**
+ * A bunch of utilities to deal with objects and their key/values pairs.
+ *
+ * @packageDocumentation
+ */
+
+import { ok, err, Result } from 'neverthrow';
+import { isArray, isPlainObject, isString } from '../is';
 
 /**
- * The function checks if a given value is a plain object.
+ * Checks if a plain JavaScript object has a specified property.
  *
- * @param {T} value - The value to be checked if it is a plain object.
+ * @param obj - The object to check for the specified property.
+ * @param prop - The property to check for in the object.
+ * @returns A `Result` object with either a boolean indicating whether the object has the specified property, or an `Error` object if the input parameters are invalid.
  *
- * @returns A boolean value indicating whether the input value is a plain object or not.
+ * @example
+ * ```typescript
+ * const myObject = { foo: 'bar', baz: 42 };
+ * hasProperty(myObject, 'foo');
+ * // => { ok: true, value: 'true' }
+ *
+ * hasProperty(myObject, 'qux')
+ * // => { ok: true, value: 'false' }
+ * ```
+ *
+ *  @example
+ * Handle invalid input parameters:
+ * ```typescript
+ * const user = { name: "John", age: 25 };
+ * hasProperty(null, "name");
+ * // => { ok: false, error: Error('[objects.hasProperty] Expected a plain javascript object') }
+ *
+ * hasProperty(user, null);
+ * // => { ok: false, error: Error('[objects.hasProperty] Expected an array of property keys') }
+ * ```
  */
-export function isPlainObject<
-	T extends boolean | number | string | any[] | object | symbol | undefined | null
->(value: T): boolean {
-	return value != null && typeof value === 'object' && value.constructor === Object;
+
+export function hasProperty<T extends Record<string, any>, K extends PropertyKey>(
+	obj: T,
+	key: K
+): Result<boolean, Error> {
+	if (!isPlainObject(obj)) {
+		return err(new Error('[objects.hasProperty] Expected a plain javascript object'));
+	}
+
+	if (!isString(key)) {
+		return err(new Error('[objects.hasProperty] Expected a valid property key'));
+	}
+
+	return ok(key in obj);
 }
 
 /**
- * Thie function checks if a given object has a specified property with a specified value.
+ * Checks if an object has all the specified properties.
  *
- * @param {any} obj - The object to check the property value in.
- * @param {any} prop - The `prop` parameter is a property/key of the `obj` parameter that we want to
- * check the value of.
- * @param {any} value - The value parameter is the value that we want to check if it matches the
- * value of the property in the object.
+ * @remarks
+ * This function uses the {@link hasProperty} function to check if the object has each property
+ * specified in the `props` array.
  *
- * @returns Returns either an `Err` containing an `Error` object if the input `obj` is not
- * a plain javascript object, or an `Ok` containing a boolean value indicating whether the
- *  input `obj` has a property `prop` with the value `value`.
+ * @param obj - The object to check for the properties.
+ * @param props - An array of property keys to check for in the object.
+ * @returns A `Result` object with either a `boolean` value indicating whether the object has all
+ * the specified properties or not, or an `Error` object if any of the inputs are invalid.
+ *
+ * @example
+ * ```typescript
+ * const user = { name: "John", age: 25 };
+ * hasProperties(user, ["name", "age"]);
+ * // => { ok: true, value: 'true' }
+ *
+ * hasProperties(user, ["name", "email"]);
+ * // => { ok: true, value: 'false' }
+ *```
+ *
+ * @example
+ * Handle invalid input parameters:
+ * ```typescript
+ * const user = { name: "John", age: 25 };
+ * hasProperties(null, ["name", "age"]);
+ * // => { ok: false, error: Error('[objects.hasProperties] Expected a plain javascript object') }
+ *
+ * hasProperties(user, null);
+ * // => { ok: false, error: Error('[objects.hasProperties] Expected an array of property keys') }
+ * ```
  */
-export function checkPropValue(
-	obj: any,
-	prop: any,
+export function hasProperties<T extends Record<string, any>, K extends PropertyKey>(
+	obj: T,
+	keys: Array<K>
+): Result<boolean, Error> {
+	if (!isPlainObject(obj)) {
+		return err(new Error('[objects.hasProperties] Expected a plain javascript object'));
+	}
+
+	if (!isArray(keys)) {
+		return err(new Error('[objects.hasProperties] Expected an array of object properties'));
+	}
+
+	const result = keys.every((key) => {
+		const propResult = hasProperty(obj, key);
+		if (propResult.isOk()) {
+			return propResult.value;
+		}
+	});
+
+	return ok(result);
+}
+
+/**
+ * Checks if an object has the specified property with the given value as well as the type is the
+ * same.
+ *
+ * @typeParam T - The type of the object to check
+ * @typeParam K - The type of the property to check
+ * @param obj - The object to check
+ * @param key - The property key to check
+ * @param value - The value to compare against the property value
+ * @returns A `Result` object with either a boolean indicating whether the property exists
+ * and has the specified value and type, or an `Error` object if the property does not exist
+ *
+ * @example
+ * Property exists with matching value and type:
+ * ```
+ * const obj = { foo: 42, bar: "baz" };
+ * hasPropertyValue(obj, "foo", 42);
+ * // => { ok: true, value: 'true' }
+ *```
+ *
+ * @example
+ * Property exists with non-matching value:
+ * ```
+ * const obj = { foo: 42, bar: "baz" };
+ * hasPropertyValue(obj, "foo", 0);
+ * // => { ok: true, value: 'false' }
+ * ```
+ *
+ * @example
+ * Property exists with matching type but different value type:
+ * ```
+ * const obj = { foo: 42, bar: "baz" };
+ * hasPropertyValue(obj, "foo", "42");
+ * // => { ok: true, value: 'false' }
+ * ```
+ *
+ * @example
+ * Property does not exist in the object:
+ * ```
+ * const obj = { foo: 42, bar: "baz" };
+ * hasPropertyValue(obj, "qux", 42);
+ * // => { ok: false, error: Error('[objects.hasPropertyValue] Property qux does not exist') }
+ * ```
+ */
+export function hasPropertyValue<T extends Record<string, any>, K extends keyof T>(
+	obj: T,
+	key: K,
 	value: any
-): Err<never, Error> | Ok<boolean, never> {
-	if (!isPlainObject(obj)) {
-		return err(new Error('Expected a plain javascript object'));
-	}
+): Result<boolean, Error> {
+	return hasProperty(obj, key).andThen((propExists) => {
+		if (!propExists) {
+			return err(new Error(`[objects.hasPropertyValue] Property ${String(key)} does not exist`));
+		}
 
-	return ok(prop in Object(obj) && obj[prop] == value);
+		const propValue = obj[key];
+
+		if (typeof propValue === typeof value && propValue === value) {
+			return ok(true);
+		} else {
+			return ok(false);
+		}
+	});
 }
 
 /**
- * The function checks if a plain JavaScript object has all the required properties and
- * returns an error if it doesn't.
+ * Checks if an object has the specified properties with the given values.
  *
- * @param {any} obj - The object that needs to be checked for the presence of required properties.
- * @param {any[]} props - props is an array of strings representing the required properties that
- * should exist in the obj parameter. The function checks if all the properties in the props array
- * exist in the obj parameter and are not empty, undefined, or contain the string 'undefined'.
+ * @remarks
+ * This function uses the {@link hasPropertyValue} function to check if the object has the
+ * specified property with the given value as well as the type is the same.
  *
- * @returns Returns either an `Err` containing an `Error` object if the `obj` parameter is not a
- * plain javascript object, or an `Ok` containing a boolean value indicating whether all the
- * properties in the `props` array are present and not empty or undefined in the `obj` parameter.
- */
-export function checkRequiredProp(obj: any, props: any[]): Err<never, Error> | Ok<boolean, never> {
-	if (!isPlainObject(obj)) {
-		return err(new Error('Expected a plain javascript object'));
-	}
+ * @typeParam T - The type of the object to check.
+ * @param obj - The object to check for properties.
+ * @param propValues - An object whose keys are property names and values are the values to compare against.
+ * @returns A `Result` object with either a boolean indicating if all properties exist in the
+ * object with the specified values, or an `Error` object  if any of the properties are missing or
+ * have different values.
+ *
+ * @example
+ *  Check if person object has name and email properties with the specified values:
+ * ```typescript
+ * interface Person {
+ *   name: string;
+ *   age: number;
+ *   email: string;
+ * }
+ *
+ * const person: Person = {
+ *   name: 'John Doe',
+ *   age: 30,
+ *   email: 'johndoe@example.com',
+ * };
+ *
+ * hasPropertiesWithValue(person, { name: 'John Doe', email: 'johndoe@example.com' });
+ * // => { ok: true, value: 'true' }
+ * ```
+ *
+ * @example
+ *  Check if person object has name and email properties with different values:
+ * ```typescript
+ * interface Person {
+ *   name: string;
+ *   age: number;
+ *   email: string;
+ * }
+ *
+ * const person: Person = {
+ *   name: 'John Doe',
+ *   age: 30,
+ *   email: 'johndoe@example.com',
+ * };
+ *
+ * hasPropertiesWithValue(person, { name: 'Jane Doe', email: 'janedoe@example.com' });
+ * // => { ok: true, value: 'false' }
+ *```
+ *
+ * @example
+ * Check if person object has `surname` property with the specified value:
+ * ```typescript
+ * interface Person {
+ *   name: string;
+ *   age: number;
+ *   email: string;
+ * }
+ *
+ * const person: Person = {
+ *   name: 'John Doe',
+ *   age: 30,
+ *   email: 'johndoe@example.com',
+ * };
+ *
+ * hasPropertiesWithValue(person, { surname: 'Doe', age: 40 });
+ *  // => { ok: false, error: Error('[objects.hasPropertyValue] Property surname does not exist') }
+ * ```
+ *
 
-	return ok(
-		props.every(
-			(p) => p in obj && obj[p] != '' && obj[p] != undefined && !obj[p].includes('undefined')
-		)
-	);
+ */
+export function hasPropertiesWithValue<T extends Record<string, any>>(
+	obj: T,
+	propValues: Partial<{ [P in keyof T]: T[P] }>
+): Result<boolean, Error> {
+	const entries = Object.entries(propValues);
+
+	const checks = entries.map(([key, value]) => hasPropertyValue(obj, key, value));
+
+	const failedChecks = checks.filter((check) => check.isErr());
+	if (failedChecks.length > 0) {
+		return failedChecks[0];
+	}
+	const successChecks = checks.filter((check) => check._unsafeUnwrap() === false);
+	if (successChecks.length > 0) {
+		return ok(false);
+	}
+	return ok(true);
 }
 
 /**
- * The function converts a plain JavaScript object into a string of CSS variables.
+ * Returns a CSS variable string from a plain object with key-value pairs.
  *
- * @param {any} obj - The `obj` parameter is expected to be a plain JavaScript object containing
- * key-value pairs that will be converted into CSS variables.
+ * @remarks
+ * This function uses `Object.entries()` and `Array.map()` to generate a string
+ * with CSS variable declarations. The object keys are expected to be strings,
+ * while the values can be of any type. If the input object is not a plain object,
+ * an error is returned.
  *
- * @returns Returns either an `Err` containing an `Error` object if the input `obj` is not
- * a plain javascript object, or an `Ok` containing a string of CSS variable declarations created
- * from the key-value pairs of the input `obj`.
+ * @typeParam T - The type of the input object.
+ * @param obj - The object to convert to a CSS variable string.
+ * @returns A `Result` object with either the CSS variable string, or an `Error` object is the given
+ * object is not a plain javascript object.
+ *
+ * @example
+ * ```typescript
+ * const obj = { primaryColor: '#f00', secondaryColor: '#0f0', fontSize: '16px' };
+ * mapToCssVars(obj)
+ * // => { ok: true, value: '--primaryColor: #f00; --secondaryColor: #0f0; --fontSize: 16px;' }
+ *```
+ *
+ * @example
+ * ```typescript
+ * mapToCssVars('a')
+ * // => { ok: false, error: Error('[objects.mapToCssVars] Expected a plain javascript object') }
+ * ```
  */
-export function objToCssVars(obj: any): Err<never, Error> | Ok<string, never> {
+export function mapToCssVars<T extends Record<PropertyKey, any>>(obj: T): Result<string, Error> {
 	if (!isPlainObject(obj)) {
-		return err(new Error('Expected a plain javascript object'));
+		return err(new Error('[objects.mapToCssVarsString] Expected a plain javascript object'));
 	}
 
 	return ok(
