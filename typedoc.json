@@ -1,0 +1,20 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"tsconfig": "./tsconfig.json",
+	"entryPoints": [
+		"src/collections/index.ts",
+		"src/colors/index.ts",
+		"src/dates/index.ts",
+		"src/is/index.ts",
+		"src/objects/index.ts",
+		"src/paths/index.ts",
+		"src/strings/index.ts",
+		"src/urls/index.ts"
+	],
+	"plugin": ["typedoc-plugin-coverage", "typedoc-plugin-extras", "typedoc-plugin-keywords"],
+	"keywords": ["typescript", "javascript", "utilities", "helpers", "library"],
+	"titleLink": "https://ts-utils.local:8890",
+	"searchInComments": true,
+	"githubPages": false,
+	"out": "docs"
+}

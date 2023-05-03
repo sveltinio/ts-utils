@@ -7,9 +7,10 @@ module.exports = {
 		project: ['./tsconfig.json'],
 		tsconfigRootDir: __dirname
 	},
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'eslint-plugin-tsdoc'],
 	rules: {
-		'@typescript-eslint/no-explicit-any': 'off'
+		'@typescript-eslint/no-explicit-any': 'off',
+		'tsdoc/syntax': 'warn'
 	},
 	ignorePatterns: ['*.cjs'],
 	env: {
