@@ -11,10 +11,15 @@
 		"src/strings/index.ts",
 		"src/urls/index.ts"
 	],
-	"plugin": ["typedoc-plugin-coverage", "typedoc-plugin-extras", "typedoc-plugin-keywords"],
-	"keywords": ["typescript", "javascript", "utilities", "helpers", "library"],
 	"titleLink": "https://ts-utils.sveltin.io",
 	"searchInComments": true,
 	"githubPages": false,
-	"out": "docs"
+	"customCss": "./assets/css/style.css",
+	"out": "docs",
+	"plugin": ["typedoc-plugin-coverage", "typedoc-plugin-extras", "typedoc-plugin-keywords"],
+	"keywords": ["typescript", "javascript", "utilities", "helpers", "library"],
+	"coverageLabel": "coverage",
+	"footerTypedocVersion": true,
+	"footerLastModified": true,
+	"favicon": "https://sveltin.io/images/icons/favicon.png"
 }
