@@ -7,7 +7,7 @@
     <a href="https://ts-utils.sveltin.io" target="_blank"><img src="https://img.shields.io/badge/api-tsdoc-a855f7" alt="sveltinio/ts-utils documentation" /></a>
     &nbsp;
     <a href="https://github.com/sveltinio/ts-utils/blob/main/LICENSE" target="_blank">
-        <img src="https://img.shields.io/badge/license-mit-blue?style=flat-square&logo=none" alt="license" />
+        <img src="https://img.shields.io/badge/license-mit-blue?style=flat&logo=none" alt="license" />
     </a>
 </div>
 
