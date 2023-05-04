@@ -31,7 +31,7 @@ jobs:
         run: pnpm docs:generate
 
       - name: FTP Deploy to production domain
-        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.PROD_FTP_HOSTNAME }}
           username: ${{ secrets.PROD_FTP_USERNAME }}
