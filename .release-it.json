@@ -38,7 +38,7 @@
 					},
 					{
 						"type": "ci",
-						"section": "gear: CI"
+						"section": ":gear: CI"
 					},
 					{
 						"type": "docs",
