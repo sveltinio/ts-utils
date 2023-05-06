@@ -430,17 +430,20 @@ export function pickRandom<T extends number | string | boolean>(
 }
 
 /**
- * Checks if a given value exists in a collection (array) of values.
+ * Checks if an array contains a given value or an array of values.
  *
  * @typeParam T - The type of the elements in the input array.
- * @param arr - The array of values of type `number` or `string` to search.
- * @param value - The value to check for existence in the collection.
+ * @param arr - The array to check.
+ * @param value - The value or array of values to check for.
  *
- * @returns A boolean value indicating whether the given value is present in the given collection.
+ * @returns A boolean value indicating whether the array contains the value(s).
  *
  * @example
  * ```typescript
  * contains(['apple', 'banana', 'cherry'], 'banana'))
+ * // => true
+ *
+ * contains(['one', 'two', 'four'], ['two', 'one'])
  * // => true
  *
  * contains(['apple', 'banana', 'cherry'], 'orange'))
@@ -449,17 +452,27 @@ export function pickRandom<T extends number | string | boolean>(
  * contains([1, 2, 3], 4)
  * // => false
  *
+ * contains([1, "hello", 3], 4)
+ * // => false
+ *
  * contains("not an array")
  * // => false
  * ```
  */
-export function contains<T extends number | string>(arr: T[], value: T): value is T {
+export function contains<T extends number | string | boolean>(
+	arr: T[],
+	value: T | T[]
+): value is T | T[] {
 	if (!isArray(arr)) return false;
 
-	if (!arr.every(isNumber) && !arr.every(isString)) return false;
+	if (!arr.every(isNumber) && !arr.every(isString) && !arr.every(isBool)) return false;
+
+	if (isArray(value)) {
+		return value.every((v) => contains(arr, v));
+	}
 
 	const tmpRes = Array.from(arr).includes(value);
-	return isNumber(value) ? tmpRes : !isEmpty(value) && tmpRes;
+	return isNumber(value) || isBool(value) ? tmpRes : !isEmpty(value as T) && tmpRes;
 }
 
 /**

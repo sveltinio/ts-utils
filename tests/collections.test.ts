@@ -359,17 +359,25 @@ describe('contains', () => {
 	it('should be true', () => {
 		expect(contains([1, 2, 3], 3)).toBe(true);
 		expect(contains(['one', 'two', 'four'], 'two')).toBe(true);
+		expect(contains([1, 2, 3], [3])).toBe(true);
+		expect(contains(['one', 'two', 'four'], ['two', 'one'])).toBe(true);
+		expect(contains([true, true, false, true], false)).toBe(true);
 	});
 
 	it('should be false', () => {
 		expect(contains([1, 2, 3], 4)).toBe(false);
 		expect(contains(['one', 'two', 'four'], 'five')).toBe(false);
-		expect(contains('not-an-array', 4)).toBe(false);
+		expect(contains([1, 2, 3], [4])).toBe(false);
+		expect(contains(['one', 'two', 'four'], ['five'])).toBe(false);
+	});
+
+	it('should returns false passing an array of mixed types', () => {
+		expect(contains([1, 'hello', 3], 4)).toBe(false);
 	});
 
 	it('should returns false passing an array of not supported types', () => {
-		const data = [true, true, false, true];
-		expect(contains(data)).toBe(false);
+		expect(contains('not-an-array', 4)).toBe(false);
+		expect(contains({ message: 'hello' }, true)).toBe(false);
 	});
 });
 

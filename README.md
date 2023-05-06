@@ -13,7 +13,7 @@
 
 A bunch of common utilities in pure Typescript to deal with primitives, strings, urls, objects, collections, dates etc.
 
-> The package has been created to make my life easier with the requirements of [Sveltin] based projects and its [packages]. Anyhow, Sveltin is definitely not mandatory and you could find something fitting your neeeds.
+> The package has been created to make my life easier with the requirements of [Sveltin] based projects and its [packages]. Anyhow, Sveltin is definitely not mandatory and you could find something fitting your needs.
 
 ## Installation
 
@@ -125,15 +125,15 @@ import { ... } from '@sveltinio/ts-utils/collections';
 
 <br/>
 
-| Name              | Description                                                                                 |
-|:----------------- |:------------------------------------------------------------------------------------------- |
-| sortBy            | Sorts an array of objects based on a specified property and order                           |
-| groupedByOne      | Groups an array of objects by a specified property and returns an array of grouped objects  |
+| Name              | Description                                                                                |
+|:----------------- |:------------------------------------------------------------------------------------------ |
+| sortBy            | Sorts an array of objects based on a specified property and order                          |
+| groupedByOne      | Groups an array of objects by a specified property and returns an array of grouped objects |
 | groupedByMany     | Groups an array of objects by multiple properties separated by dot notation and returns an array of grouped objects |
-| pickRandom        | Picks random values from an array of numbers or strings                                     |
-| shuffle           | Shuffles the elements of an array of number, or string values randomly                      |
-| shuffleByProperty | Shuffles an array of plain JavaScript objects by the specified property                     |
-| contains          | Checks if a given value exists in a collection (array) of numbers or strings                |
+| pickRandom        | Picks random values from an array of numbers or strings                                    |
+| shuffle           | Shuffles the elements of an array of number, or string values randomly                     |
+| shuffleByProperty | Shuffles an array of plain JavaScript objects by the specified property                    |
+| contains          | Checks if an array contains a given value or an array of values                            |
 
 ### Colors
 
