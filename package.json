@@ -44,7 +44,7 @@
 		"typedoc-plugin-extras": "^2.3.3",
 		"typedoc-plugin-keywords": "^1.4.1",
 		"typescript": "^5.0.4",
-		"vite": "^4.3.4",
+		"vite": "^4.3.5",
 		"vitest": "^0.31.0"
 	},
 	"scripts": {
