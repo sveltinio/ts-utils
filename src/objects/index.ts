@@ -263,6 +263,37 @@ export function hasPropertiesWithValue<T extends Record<string, any>>(
 }
 
 /**
+ * Gets the value of a property on an object.
+ *
+ * @typeParam T - The type of the object to get the property from.
+ * @param obj - The object to get the property from.
+ * @param prop - The property key to get the value of.
+ * @returns The value of the property, or `undefined` if it doesn't exist.
+ *
+ * @example
+ * ```typescript
+ * const obj = { a: { b: 123 } };
+ * getPropertyValue(obj, 'a.b');
+ * // =>  123
+ *
+ * const obj2 = { a: { b: null } };
+ * getPropertyValue(obj2, 'a.b.c');
+ * //  => undefined
+ * ```
+ */
+export function getPropertyValue<T>(obj: T, prop: PropertyKey): any {
+	const parts = String(prop).split('.');
+	let value: any = obj;
+	for (const part of parts) {
+		if (value == null) {
+			return undefined;
+		}
+		value = value[part];
+	}
+	return value;
+}
+
+/**
  * Returns a CSS variable string from a plain object with key-value pairs.
  *
  * @remarks

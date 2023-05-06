@@ -9,6 +9,7 @@ import {
 	isString,
 	isUndefined
 } from '../is/index.js';
+import { getPropertyValue } from '../objects/index.js';
 
 /**
  * A bunch of utilities to deal with collections.
@@ -256,7 +257,7 @@ export function groupedByMany<T>(
 	// If propValue is not an array, it will create an array with a single item
 	// and push the obj into the corresponding group.
 	collection.forEach((obj) => {
-		const propValue = getProperty(obj, key);
+		const propValue = getPropertyValue(obj, key);
 		const values = Array.isArray(propValue) ? propValue : [propValue];
 		values.forEach((value) => {
 			const groupKey = String(value);
@@ -508,37 +509,6 @@ export function uniq<T extends number | string>(arr: T[]): Result<T[], Error> {
 
 	const uniqSet = new Set<T>(arr);
 	return ok(Array.from(uniqSet));
-}
-
-/**
- * Gets the value of a property on an object.
- *
- * @typeParam T - The type of the object to get the property from.
- * @param obj - The object to get the property from.
- * @param prop - The property key to get the value of.
- * @returns The value of the property, or `undefined` if it doesn't exist.
- *
- * @example
- * ```typescript
- * const obj = { a: { b: 123 } };
- * getProperty(obj, 'a.b');
- * // =>  123
- *
- * const obj2 = { a: { b: null } };
- * getProperty(obj2, 'a.b.c');
- * //  => undefined
- * ```
- */
-export function getProperty<T>(obj: T, prop: PropertyKey): any {
-	const parts = String(prop).split('.');
-	let value: any = obj;
-	for (const part of parts) {
-		if (value == null) {
-			return undefined;
-		}
-		value = value[part];
-	}
-	return value;
 }
 
 // --------------------------------------------------------------------------------------

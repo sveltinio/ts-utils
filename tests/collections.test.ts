@@ -7,8 +7,7 @@ import {
 	shuffle,
 	contains,
 	uniq,
-	shuffleByProperty,
-	getProperty
+	shuffleByProperty
 } from '../src/collections/index.js';
 import { menu, people, posts } from './sample_data.js';
 
@@ -188,34 +187,6 @@ describe('groupedByMany', () => {
 		expect(res._unsafeUnwrapErr().message).toBe(
 			'[collections.groupedByMany] Expected array for the key propertiesToInclude'
 		);
-	});
-});
-
-describe('getProperty', () => {
-	it('should return undefined for non-existent properties', () => {
-		const obj = { a: { b: { c: 'value' } } };
-		expect(getProperty(obj, 'd')).toBe(undefined);
-		expect(getProperty(obj, 'a.e')).toBe(undefined);
-		expect(getProperty(obj, 'a.b.f')).toBe(undefined);
-	});
-
-	it('should return the value of existing properties', () => {
-		const obj = { a: { b: { c: 'value' } } };
-		expect(getProperty(obj, 'a.b.c')).toBe('value');
-		expect(getProperty(obj, 'a')).toEqual({ b: { c: 'value' } });
-		expect(getProperty(obj, 'a.b')).toEqual({ c: 'value' });
-	});
-
-	it('should handle nested properties with numeric keys', () => {
-		const obj = { a: { b: [{ c: 'value' }] } };
-		expect(getProperty(obj, 'a.b.0.c')).toBe('value');
-	});
-
-	it('should handle non-object values', () => {
-		expect(getProperty(null, 'a')).toBe(undefined);
-		expect(getProperty(undefined, 'a')).toBe(undefined);
-		expect(getProperty('string', 'a')).toBe(undefined);
-		expect(getProperty(123, 'a')).toBe(undefined);
 	});
 });
 

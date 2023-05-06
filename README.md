@@ -134,6 +134,7 @@ import { ... } from '@sveltinio/ts-utils/collections';
 | shuffle           | Shuffles the elements of an array of number, or string values randomly                     |
 | shuffleByProperty | Shuffles an array of plain JavaScript objects by the specified property                    |
 | contains          | Checks if an array contains a given value or an array of values                            |
+| uniq              | Removes duplicates from an array of numbers or strings                                     |
 
 ### Colors
 
@@ -185,6 +186,7 @@ import { ... } from '@sveltinio/ts-utils/objects';
 | hasProperties          | Checks if an object has all the specified properties                              |
 | hasPropertyValue       | Checks if an object has the specified property with the given value and same type |
 | hasPropertiesWithValue | Checks if an object has the specified properties with the given values            |
+| getPropertyValue       | Gets the value of a property on an object                                         |
 | mapToCssVars           | Returns a CSS variable string from a plain object with key-value pairs            |
 
 ### Paths

@@ -4,7 +4,8 @@ import {
 	hasProperties,
 	hasPropertyValue,
 	hasPropertiesWithValue,
-	mapToCssVars
+	mapToCssVars,
+	getPropertyValue
 } from '../src/objects/index.js';
 import { ok, err } from 'neverthrow';
 
@@ -187,6 +188,34 @@ describe('hasPropertiesWithValue', () => {
 		expect(result._unsafeUnwrapErr().message).toBe(
 			'[objects.hasPropertyValue] Property surname does not exist'
 		);
+	});
+});
+
+describe('getPropertyValue', () => {
+	it('should return undefined for non-existent properties', () => {
+		const obj = { a: { b: { c: 'value' } } };
+		expect(getPropertyValue(obj, 'd')).toBe(undefined);
+		expect(getPropertyValue(obj, 'a.e')).toBe(undefined);
+		expect(getPropertyValue(obj, 'a.b.f')).toBe(undefined);
+	});
+
+	it('should return the value of existing properties', () => {
+		const obj = { a: { b: { c: 'value' } } };
+		expect(getPropertyValue(obj, 'a.b.c')).toBe('value');
+		expect(getPropertyValue(obj, 'a')).toEqual({ b: { c: 'value' } });
+		expect(getPropertyValue(obj, 'a.b')).toEqual({ c: 'value' });
+	});
+
+	it('should handle nested properties with numeric keys', () => {
+		const obj = { a: { b: [{ c: 'value' }] } };
+		expect(getPropertyValue(obj, 'a.b.0.c')).toBe('value');
+	});
+
+	it('should handle non-object values', () => {
+		expect(getPropertyValue(null, 'a')).toBe(undefined);
+		expect(getPropertyValue(undefined, 'a')).toBe(undefined);
+		expect(getPropertyValue('string', 'a')).toBe(undefined);
+		expect(getPropertyValue(123, 'a')).toBe(undefined);
 	});
 });
 
