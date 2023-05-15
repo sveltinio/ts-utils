@@ -5,7 +5,7 @@
 	"description": "A bunch of common utilities in pure Typescript to deal with primitives, strings, urls, objects, collections, dates etc.",
 	"author": "sveltinio <dev@sveltin.io>",
 	"license": "MIT",
-	"homepage": "https://github.com/sveltinio/ts-utils#readme",
+	"homepage": "https://ts-utils.sveltin.io",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/sveltinio/ts-utils.git"
