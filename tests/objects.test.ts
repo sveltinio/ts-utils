@@ -5,7 +5,8 @@ import {
 	hasPropertyValue,
 	hasPropertiesWithValue,
 	mapToCssVars,
-	getPropertyValue
+	getPropertyValue,
+	merge
 } from '../src/objects/index.js';
 import { ok, err } from 'neverthrow';
 
@@ -188,6 +189,48 @@ describe('hasPropertiesWithValue', () => {
 		expect(result._unsafeUnwrapErr().message).toBe(
 			'[objects.hasPropertyValue] Property surname does not exist'
 		);
+	});
+});
+
+describe('deepMerge', () => {
+	it('merges two objects with overlapping properties', () => {
+		const target = { a: { b: 1, c: 2 }, d: 3 };
+		const source = { a: { b: 2, d: 4 }, e: 5 };
+		const expected = { a: { b: 2, c: 2, d: 4 }, d: 3, e: 5 };
+		const result = merge(target, source);
+		expect(result).toEqual(expected);
+	});
+
+	it('merges arrays at the same level', () => {
+		const target = { a: [1, 2] };
+		const source = { a: [3, 4] };
+		const expected = { a: [1, 2, 3, 4] };
+		const result = merge(target, source);
+		expect(result).toEqual(expected);
+	});
+
+	it('merges nested arrays', () => {
+		const target = { a: [1, [2, 3]] };
+		const source = { a: [[4, 5], 6] };
+		const expected = { a: [1, [2, 3], [4, 5], 6] };
+		const result = merge(target, source);
+		expect(result).toEqual(expected);
+	});
+
+	it('merges objects with null values', () => {
+		const target = { a: null };
+		const source = { a: { b: 1 } };
+		const expected = { a: { b: 1 } };
+		const result = merge(target, source);
+		expect(result).toEqual(expected);
+	});
+
+	it('returns the source object if the target is undefined', () => {
+		const target = undefined;
+		const source = { a: 1 };
+		const expected = { a: 1 };
+		const result = merge(target, source);
+		expect(result).toEqual(expected);
 	});
 });
 

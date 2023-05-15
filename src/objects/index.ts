@@ -5,7 +5,7 @@
  */
 
 import { ok, err, Result } from 'neverthrow';
-import { isArray, isPlainObject, isString } from '../is';
+import { isArray, isNullish, isObject, isPlainObject, isString, isUndefined } from '../is';
 
 /**
  * Checks if a plain JavaScript object has a specified property.
@@ -260,6 +260,53 @@ export function hasPropertiesWithValue<T extends Record<string, any>>(
 		return ok(false);
 	}
 	return ok(true);
+}
+
+/**
+ * Recursively merges two objects of compatible types.
+ * Properties of `source` are merged into corresponding properties of `target`.
+ * Properties with object values are recursively merged.
+ * Properties with primitive values are overridden by the values of `source`.
+ *
+ * @typeparam T - The type of the target object.
+ * @param target - The object to merge into.
+ * @param source - The object to merge from.
+ *
+ * @returns A new object that is the merged result of `target` and `source`.
+ *
+ * @example
+ * ``` typescript
+ * const obj1 = { a: 1, b: { c: [2, 3], d: { e: 4 } } };
+ * const obj2 = { a: 2, b: { c: [4, 5], d: { f: 6 } } };
+ * merge(obj1, obj2)
+ * // => { a: 2, b: { c: [2, 3, 4, 5], d: { e: 4, f: 6 } } }
+ * ```
+ */
+export function merge<T extends Record<PropertyKey, any>>(target: T, source: T): T {
+	if (isNullish(target)) return source;
+
+	if (!isObject(target) || !isObject(source)) return source;
+
+	if (isArray(target) && isArray(source)) return target.concat(source);
+
+	const result: Record<PropertyKey, any> = {};
+
+	Object.keys(target ?? {})
+		.concat(Object.keys(source))
+		.forEach((key) => {
+			const targetValue = target ? target[key] : undefined;
+			const sourceValue = source[key];
+
+			if (!isUndefined(targetValue) && !isUndefined(sourceValue)) {
+				result[key] = merge(targetValue, sourceValue);
+			} else if (!isUndefined(sourceValue)) {
+				result[key] = sourceValue;
+			} else {
+				result[key] = targetValue;
+			}
+		});
+
+	return result;
 }
 
 /**

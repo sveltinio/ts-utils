@@ -46,7 +46,7 @@ const { hasProperty, hasPropertyValue } = require('@sveltinio/ts-utils/objects')
 
 ## Type-Safe Error Handling
 
-Except the functions returning a `boolean` value, the functions return a `Result` type that represents either success (`Ok`) or failure (`Err`) from [neverthrow] for a [type-safe error handling].
+Except the functions returning a `boolean` value, the others mainly return a `Result` type that represents either success (`Ok`) or failure (`Err`) from [neverthrow] for a [type-safe error handling].
 
 ```typescript
 // from neverthrow docs
@@ -55,7 +55,7 @@ type Result<T, E>
   | Err<T, E> // contains a failure value of type E
 ```
 
-The ways to access the return value from a `Result` type may vary based on the use-case differents and your programming style. Below some samples for quick reference:
+The ways to access the return value from a `Result` type may vary based on the use-case and your programming style. Below some samples for quick reference:
 
 ```javascript
 import { toKebabCase } from '@sveltinio/ts-utils/strings';
@@ -125,16 +125,16 @@ import { ... } from '@sveltinio/ts-utils/collections';
 
 <br/>
 
-| Name              | Description                                                                                |
-|:----------------- |:------------------------------------------------------------------------------------------ |
-| sortBy            | Sorts an array of objects based on a specified property and order                          |
-| groupedByOne      | Groups an array of objects by a specified property and returns an array of grouped objects |
-| groupedByMany     | Groups an array of objects by multiple properties separated by dot notation and returns an array of grouped objects |
-| pickRandom        | Picks random values from an array of numbers or strings                                    |
-| shuffle           | Shuffles the elements of an array of number, or string values randomly                     |
-| shuffleByProperty | Shuffles an array of plain JavaScript objects by the specified property                    |
-| contains          | Checks if an array contains a given value or an array of values                            |
-| uniq              | Removes duplicates from an array of numbers or strings                                     |
+| Name              | Description                                                                                         |
+|:----------------- |:--------------------------------------------------------------------------------------------------- |
+| sortBy            | Sorts an array of objects based on a specified property and order                                   |
+| groupedByOne      | (1:1) Groups an array of objects by a specified property and returns an array of grouped objects    |
+| groupedByMany     | (1:many) Groups an array of objects by a specified property and returns an array of grouped objects |
+| pickRandom        | Picks random values from an array of numbers or strings                                             |
+| shuffle           | Shuffles the elements of an array of number, or string values randomly                              |
+| shuffleByProperty | Shuffles an array of plain JavaScript objects by the specified property                             |
+| contains          | Checks if an array contains a given value or an array of values                                     |
+| uniq              | Removes duplicates from an array of numbers or strings                                              |
 
 ### Colors
 
@@ -186,6 +186,7 @@ import { ... } from '@sveltinio/ts-utils/objects';
 | hasProperties          | Checks if an object has all the specified properties                              |
 | hasPropertyValue       | Checks if an object has the specified property with the given value and same type |
 | hasPropertiesWithValue | Checks if an object has the specified properties with the given values            |
+| merge                  | Recursively merges two objects of compatible types                                |
 | getPropertyValue       | Gets the value of a property on an object                                         |
 | mapToCssVars           | Returns a CSS variable string from a plain object with key-value pairs            |
 
