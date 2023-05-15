@@ -1,6 +1,6 @@
 {
 	"name": "@sveltinio/ts-utils",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"packageManager": "pnpm@8.5.1",
 	"description": "A bunch of common utilities in pure Typescript to deal with primitives, strings, urls, objects, collections, dates etc.",
 	"author": "sveltinio <dev@sveltin.io>",
