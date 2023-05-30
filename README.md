@@ -238,7 +238,7 @@ import { ... } from '@sveltinio/ts-utils/strings';
 | toKebabCase          | Converts a string to kebab-case format                                                |
 | toCamelCase          | Converts a string to camelCase format                                                 |
 | toPascalCase         | Converts a string to PascalCase format                                                |
-| camelToSnake         | Converts a camelCase string to snamecase format                                       |
+| camelToSnake         | Converts a camelCase string to snake_case format                                       |
 | camelToKebab         | Converts a camelCase string to kebab-case format                                      |
 | isCommaSeparated     | Checks if a given string contains a comma-separated list                              |
 | toCommaSeparated     | Replaces all whitespace and semicolons with commas to return a comma-separated string |
