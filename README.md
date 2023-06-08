@@ -15,6 +15,22 @@ A bunch of common utilities in pure Typescript to deal with primitives, strings,
 
 > The package has been created to make my life easier with the requirements of [Sveltin] based projects and its [packages]. Anyhow, Sveltin is definitely not mandatory and you could find something fitting your needs.
 
+## Table of contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Type-Safe Error Handling](#type-safe-error-handling)
+- [What's inside?](#whats-inside)
+  - [Is](#is)
+  - [Collections](#collections)
+  - [Colors](#colors)
+  - [CSS](#css)
+  - [Dates](#dates)
+  - [Objects](#objects)
+  - [Paths](#paths)
+  - [Strings](#strings)
+  - [Urls](#urls)
+
 ## Installation
 
 ```bash
