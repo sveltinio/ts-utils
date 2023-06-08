@@ -29,6 +29,7 @@ A bunch of common utilities in pure Typescript to deal with primitives, strings,
   - [Dates](#dates)
   - [Objects](#objects)
   - [Paths](#paths)
+  - [ScreenBreakpoint](#screenbreakpoint)
   - [Strings](#strings)
   - [Urls](#urls)
 
