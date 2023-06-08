@@ -116,6 +116,11 @@
 			"import": "./dist/paths/index.js",
 			"require": "./dist/paths/index.cjs"
 		},
+		"./screen-breakpoint": {
+			"types": "./dist/screen-breakpoint/index.d.ts",
+			"import": "./dist/screen-breakpoint/index.js",
+			"require": "./dist/screen-breakpoint/index.cjs"
+		},
 		"./strings": {
 			"types": "./dist/strings/index.d.ts",
 			"import": "./dist/strings/index.js",
@@ -157,6 +162,9 @@
 			],
 			"paths": [
 				"./dist/paths/index.d.ts"
+			],
+			"screen-breakpoint": [
+				"./dist/screen-breakpoint/index.d.ts"
 			],
 			"strings": [
 				"./dist/strings/index.d.ts"

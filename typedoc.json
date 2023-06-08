@@ -10,6 +10,7 @@
 		"src/is/index.ts",
 		"src/objects/index.ts",
 		"src/paths/index.ts",
+		"src/screen-breakpoint/index.ts",
 		"src/strings/index.ts",
 		"src/urls/index.ts"
 	],

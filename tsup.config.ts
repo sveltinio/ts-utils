@@ -11,8 +11,9 @@ export default defineConfig({
 		'src/is/index.ts',
 		'src/objects/index.ts',
 		'src/paths/index.ts',
-		'src/urls/index.ts',
 		'src/strings/index.ts',
+		'src/screen-breakpoint/index.ts',
+		'src/urls/index.ts',
 		'src/index.ts'
 	],
 	splitting: false,
