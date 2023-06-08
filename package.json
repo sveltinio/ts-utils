@@ -76,6 +76,11 @@
 		"access": "public"
 	},
 	"exports": {
+		"./a11y": {
+			"types": "./dist/a11y/index.d.ts",
+			"import": "./dist/a11y/index.js",
+			"require": "./dist/a11y/index.cjs"
+		},
 		"./collections": {
 			"types": "./dist/collections/index.d.ts",
 			"import": "./dist/collections/index.js",
@@ -129,11 +134,17 @@
 	},
 	"typesVersions": {
 		">4.0": {
+			"a11y": [
+				"./dist/a11y/index.d.ts"
+			],
 			"collections": [
 				"./dist/collections/index.d.ts"
 			],
 			"colors": [
 				"./dist/colors/index.d.ts"
+			],
+			"css": [
+				"./dist/css/index.d.ts"
 			],
 			"dates": [
 				"./dist/dates/index.d.ts"

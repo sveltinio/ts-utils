@@ -15,6 +15,23 @@ A bunch of common utilities in pure Typescript to deal with primitives, strings,
 
 > The package has been created to make my life easier with the requirements of [Sveltin] based projects and its [packages]. Anyhow, Sveltin is definitely not mandatory and you could find something fitting your needs.
 
+## Table of contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Type-Safe Error Handling](#type-safe-error-handling)
+- [What's inside?](#whats-inside)
+  - [Is](#is)
+  - [A11y](#a11y-accessibility)
+  - [Collections](#collections)
+  - [Colors](#colors)
+  - [CSS](#css)
+  - [Dates](#dates)
+  - [Objects](#objects)
+  - [Paths](#paths)
+  - [Strings](#strings)
+  - [Urls](#urls)
+
 ## Installation
 
 ```bash
@@ -115,6 +132,40 @@ import { ... } from '@sveltinio/ts-utils/is';
 | isUndefined   | Checks if a given value is undefined                 |
 | isEmpty       | Checks if a given value is empty or not              |
 
+### A11y (Accessibility)
+
+The `ComponentFocusManager` class provides focus management for components with multiple interactive items. It enables navigation between items, setting focus to specific items, and handling keyboard interactions.
+
+Use it to ensure keyboard accessibility as per [WAI ARIA Patterns] and improve user experience in menus, dropdowns, and other interactive components. Read the [docs](https://ts-utils.sveltin.io/module/a11y.html).
+
+```javascript
+import { ComponentFocusManager } from '@sveltinio/ts-utils/a11y';
+```
+
+<br/>
+
+#### Accessors
+
+| Accessor          | Description                                                                   |
+| :---------------- | :-----------------------------------------------------------------------------|
+| items             | A dictionary of items associated with their respective identifiers            |
+| firstChars        | A dictionary of first characters associated with their respective identifiers |
+| firstItem         | A dictionary of the first item associated with their respective identifiers   |
+| lastItem          | A dictionary of the last item associated with their respective identifiers    |
+| applyDOMChangesFn | A function that applies DOM changes asynchronously. E.g. `tick` from _svelte_ |
+
+#### Methods
+
+| Method                 | Description                                                                  |
+| :--------------------- | :--------------------------------------------------------------------------- |
+| run                    | Runs the focus manager to initialize the collections                         |
+| setFocusToFirstItem    | Sets the focus to the first item                                             |
+| setFocusToLastItem     | Sets the focus to the last item.                                             |
+| setFocusToPreviousItem | Sets the focus to the previous item relative to the current item             |
+| setFocusToNextItem     | Sets the focus to the next item relative to the current item                 |
+| setFocusByFirstChar    | Sets the focus to the item whose content starts with the specified character |
+| isSubMenu              | Checks if the given node is a submenu                                        |
+
 ### Collections
 
 Some utilities to deal with arrays. Read the [docs](https://ts-utils.sveltin.io/modules/collections.html).
@@ -162,7 +213,7 @@ import { CSSHelper } from '@sveltinio/ts-utils/css';
 
 <br/>
 
-| Method Name   | Description                                        |
+| Method        | Description                                        |
 | :------------ | :------------------------------------------------- |
 | hasClass      | Checks if an HTML element has a specific CSS class |
 | addClass      | Adds a CSS class to an HTML element                |
@@ -296,3 +347,4 @@ Free and open-source software under the [MIT License](LICENSE)
 [neverthrow documentation]: https://github.com/supermacro/neverthrow#api-documentation
 [truthy]: https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 [primitive]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values
+[WAI ARIA Patterns]: https://www.w3.org/WAI/ARIA/apg/patterns/
