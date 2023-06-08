@@ -5,6 +5,7 @@ export default defineConfig({
 	entry: [
 		'src/collections/index.ts',
 		'src/colors/index.ts',
+		'src/css/index.ts',
 		'src/dates/index.ts',
 		'src/is/index.ts',
 		'src/objects/index.ts',

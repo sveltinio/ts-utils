@@ -152,6 +152,25 @@ import { ... } from '@sveltinio/ts-utils/colors';
 | getHexValue    | Returns either the substring after the first character (if the string is a valid hex value) or an error message |
 | randomHexColor | Returns a string representing a random hex color                            |
 
+### CSS
+
+The `CSSHelper` class is a utility class that provides convenient methods for manipulating CSS classes on HTML elements. Read the [docs](https://ts-utils.sveltin.io/module/css.html).
+
+```javascript
+import { CSSHelper } from '@sveltinio/ts-utils/css';
+```
+
+<br/>
+
+| Method Name   | Description                                        |
+| :------------ | :------------------------------------------------- |
+| hasClass      | Checks if an HTML element has a specific CSS class |
+| addClass      | Adds a CSS class to an HTML element                |
+| removeClass   | Removes a CSS class from an HTML element           |
+| toggleClass   | Toggles a CSS class on an HTML element             |
+| addClasses    | Adds multiple CSS classes to an HTML element       |
+| removeClasses | Removes multiple CSS classes from an HTML element  |
+
 ### Dates
 
 Some utilities to deal with javascript `Date`objects. Read the [docs](https://ts-utils.sveltin.io/modules/dates.html).
