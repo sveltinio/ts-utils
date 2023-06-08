@@ -104,7 +104,9 @@ toKebabCase(2)
 
 ### Is
 
-Type guard utilities helping with [primitive] values and basic objects. Read the [docs](https://ts-utils.sveltin.io/modules/is.html).
+Type guard utilities helping with [primitive] values and basic objects.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/is.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/is';
@@ -136,7 +138,9 @@ import { ... } from '@sveltinio/ts-utils/is';
 
 The `ComponentFocusManager` class provides focus management for components with multiple interactive items. It enables navigation between items, setting focus to specific items, and handling keyboard interactions.
 
-Use it to ensure keyboard accessibility as per [WAI ARIA Patterns] and improve user experience in menus, dropdowns, and other interactive components. Read the [docs](https://ts-utils.sveltin.io/module/a11y.html).
+Use it to ensure keyboard accessibility as per [WAI ARIA Patterns] and improve user experience in menus, dropdowns, and other interactive components.
+
+Read the **[docs](https://ts-utils.sveltin.io/module/a11y.html)**.
 
 ```javascript
 import { ComponentFocusManager } from '@sveltinio/ts-utils/a11y';
@@ -168,7 +172,9 @@ import { ComponentFocusManager } from '@sveltinio/ts-utils/a11y';
 
 ### Collections
 
-Some utilities to deal with arrays. Read the [docs](https://ts-utils.sveltin.io/modules/collections.html).
+Some utilities to deal with arrays.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/collections.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/collections';
@@ -189,7 +195,9 @@ import { ... } from '@sveltinio/ts-utils/collections';
 
 ### Colors
 
-Some utilities to deal with hex color strings. Read the [docs](https://ts-utils.sveltin.io/colors/is.html).
+Some utilities to deal with hex color strings.
+
+Read the **[docs](https://ts-utils.sveltin.io/colors/is.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/colors';
@@ -205,7 +213,9 @@ import { ... } from '@sveltinio/ts-utils/colors';
 
 ### CSS
 
-The `CSSHelper` class is a utility class that provides convenient methods for manipulating CSS classes on HTML elements. Read the [docs](https://ts-utils.sveltin.io/module/css.html).
+The `CSSHelper` class is a utility class that provides convenient methods for manipulating CSS classes on HTML elements.
+
+Read the **[docs](https://ts-utils.sveltin.io/module/css.html)**.
 
 ```javascript
 import { CSSHelper } from '@sveltinio/ts-utils/css';
@@ -224,7 +234,9 @@ import { CSSHelper } from '@sveltinio/ts-utils/css';
 
 ### Dates
 
-Some utilities to deal with javascript `Date`objects. Read the [docs](https://ts-utils.sveltin.io/modules/dates.html).
+Some utilities to deal with javascript `Date`objects.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/dates.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/dates';
@@ -242,7 +254,9 @@ import { ... } from '@sveltinio/ts-utils/dates';
 
 ### Objects
 
-Some utilities to deal with javascript objects, their properties and values. Read the [docs](https://ts-utils.sveltin.io/modules/objects.html).
+Some utilities to deal with javascript objects, their properties and values.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/objects.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/objects';
@@ -262,11 +276,11 @@ import { ... } from '@sveltinio/ts-utils/objects';
 
 ### Paths
 
-Some utilities to deal with path strings. Read the [docs](https://ts-utils.sveltin.io/modules/paths.html).
-
-The functions do not interface with the real file system but they are used to extract some information from the given path string. It means not ensuring e.g. a file exists or a folder is a real folder on the disk. For that, simply use what already [exists](https://nodejs.org/api/path.html).
+Some utilities to deal with path strings. The functions do not interface with the real file system but they are used to extract some information from the given path string. It means not ensuring e.g. a file exists or a folder is a real folder on the disk. For that, simply use what already [exists](https://nodejs.org/api/path.html).
 
 > Some look useless at first glance but they are not for Sveltin project requirements.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/paths.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/paths';
@@ -283,9 +297,39 @@ import { ... } from '@sveltinio/ts-utils/paths';
 | isImage     | Checks if a given string is a valid image file name (jpg, jpeg, png, gif, webp, or avif) |
 | lastSegment | Returns the last segment of a given path string                                          |
 
+### ScreenBreakpoint
+
+The `ScreenBreakpointChecker` class provides methods to check the screen size and breakpoints of a device.
+
+Read the **[docs](https://ts-utils.sveltin.io/module/screen-breakpoint.html)**.
+
+```javascript
+import { ScreenBreakpointChecker } from '@sveltinio/ts-utils/screen-breakpoint';
+```
+
+<br/>
+
+#### Methods
+
+| Method            | Description                                                          |
+| :---------------- | :------------------------------------------------------------------- |
+| isBreakpoint      | Checks if the given width matches the specified breakpoint           |
+| getBreakpointName | Returns the matching breakpoint for the given width                  |
+| isMobile          | Returns true if the width corresponds to a mobile screen             |
+| isTablet          | Returns true if the width corresponds to a tablet screen             |
+| isDesktop         | Returns true if the width corresponds to a desktop screen            |
+| isXSmallScreen    | Returns true if the width corresponds to an extra small screen       |
+| isSmallScreen     | Returns true if the width corresponds to a small screen              |
+| isMediumScreen    | Returns true if the width corresponds to a medium screen             |
+| isLargeScreen     | Returns true if the width corresponds to a large screen              |
+| isXLargeScreen    | Returns true if the width corresponds to an extra large screen       |
+| isXXLargeScreen   | Returns true if the width corresponds to a double extra large screen |
+
 ### Strings
 
-Some utilities to deal with strings and string conversions. Read the [docs](https://ts-utils.sveltin.io/modules/strings.html).
+Some utilities to deal with strings and string conversions.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/strings.html)**.
 
 ```javascript
 import { ... } from '@sveltinio/ts-utils/strings';
@@ -316,7 +360,9 @@ import { ... } from '@sveltinio/ts-utils/strings';
 
 ### Urls
 
-Some utilities to deal with urls. Read the [docs](https://ts-utils.sveltin.io/modules/urls.html).
+Some utilities to deal with urls.
+
+Read the **[docs](https://ts-utils.sveltin.io/modules/urls.html)**.
 
 > Some look useless at first glance but they are not for Sveltin project requirements.
 
