@@ -101,7 +101,7 @@ export class ComponentFocusManager {
 
 	/**
 	 * Sets the focus to the first item.
-	 * @param cId - Optional ID of the component.
+	 * @param cId - Optional ID of the component. Useful when there are multiple instance of ComponentFocusManeger to reference the right one.
 	 */
 	public setFocusToFirstItem(cId?: string) {
 		const _id = !isNullish(cId) ? cId : this._id;
@@ -110,7 +110,7 @@ export class ComponentFocusManager {
 
 	/**
 	 * Sets the focus to the last item.
-	 * @param cId - Optional ID of the component.
+	 * @param cId - Optional ID of the component. Useful when there are multiple instance of ComponentFocusManeger to reference the right one.
 	 */
 	public setFocusToLastItem(cId?: string) {
 		const _id = !isNullish(cId) ? cId : this._id;
@@ -120,11 +120,11 @@ export class ComponentFocusManager {
 	/**
 	 * Sets the focus to the previous item relative to the current item.
 	 * @param currentItem - The current item.
-	 * @param mId - Optional ID of the component.
+	 * @param cId - Optional ID of the component. Useful when there are multiple instance of ComponentFocusManeger to reference the right one.
 	 * @returns The new focused item.
 	 */
-	public setFocusToPreviousItem(currentItem: HTMLElement, mId?: string) {
-		const _id = !isNullish(mId) ? mId : this._id;
+	public setFocusToPreviousItem(currentItem: HTMLElement, cId?: string) {
+		const _id = !isNullish(cId) ? cId : this._id;
 		let newMenuItem, index;
 
 		if (currentItem === this._firstItem[_id]) {
@@ -141,11 +141,11 @@ export class ComponentFocusManager {
 	/**
 	 * Sets the focus to the next item relative to the current item.
 	 * @param currentItem - The current item.
-	 * @param mId - Optional ID of the component.
+	 * @param cId - Optional ID of the component. Useful when there are multiple instance of ComponentFocusManeger to reference the right one.
 	 * @returns The new focused item.
 	 */
-	public setFocusToNextItem(currentItem: HTMLElement, mId?: string) {
-		const _id = !isNullish(mId) ? mId : this._id;
+	public setFocusToNextItem(currentItem: HTMLElement, cId?: string) {
+		const _id = !isNullish(cId) ? cId : this._id;
 		let newMenuItem, index;
 
 		if (currentItem === this._lastItem[_id]) {
@@ -187,7 +187,7 @@ export class ComponentFocusManager {
 	}
 
 	/**
-	 * Checks if the given node is a submenu.
+	 * Checks if the given node is a submenu (`aria-haspopup` attribute must be `true`).
 	 * @param node - The node to check.
 	 * @returns A boolean indicating whether the node is a submenu.
 	 */

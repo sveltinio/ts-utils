@@ -144,6 +144,16 @@ import { ComponentFocusManager } from '@sveltinio/ts-utils/a11y';
 
 <br/>
 
+#### Accessors
+
+| Accessor          | Description                                                                   |
+| :---------------- | :-----------------------------------------------------------------------------|
+| items             | A dictionary of items associated with their respective identifiers            |
+| firstChars        | A dictionary of first characters associated with their respective identifiers |
+| firstItem         | A dictionary of the first item associated with their respective identifiers   |
+| lastItem          | A dictionary of the last item associated with their respective identifiers    |
+| applyDOMChangesFn | A function that applies DOM changes asynchronously. E.g. `tick` from _svelte_ |
+
 #### Methods
 
 | Method                 | Description                                                                  |
@@ -155,16 +165,6 @@ import { ComponentFocusManager } from '@sveltinio/ts-utils/a11y';
 | setFocusToNextItem     | Sets the focus to the next item relative to the current item                 |
 | setFocusByFirstChar    | Sets the focus to the item whose content starts with the specified character |
 | isSubMenu              | Checks if the given node is a submenu                                        |
-
-#### Properties
-
-| Property          | Description                                                                   |
-| :---------------- | :-----------------------------------------------------------------------------|
-| items             | A dictionary of items associated with their respective identifiers            |
-| firstChars        | A dictionary of first characters associated with their respective identifiers |
-| firstItem         | A dictionary of the first item associated with their respective identifiers   |
-| lastItem          | A dictionary of the last item associated with their respective identifiers    |
-| applyDOMChangesFn | A function that applies DOM changes asynchronously. E.g. `tick` from _svelte_ |
 
 ### Collections
 
