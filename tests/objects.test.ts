@@ -275,6 +275,18 @@ describe('mapToCssVars', () => {
 		expect(result._unsafeUnwrap()).toBe(expected);
 	});
 
+	it('returns a string with CSS variables for a plain object adding a prefix string', () => {
+		const obj = {
+			color: 'red',
+			backgroundColor: 'white',
+			fontSize: '16px'
+		};
+		const expected = '--pfx-color: red; --pfx-backgroundColor: white; --pfx-fontSize: 16px;';
+		const result = mapToCssVars(obj, 'pfx');
+		expect(result.isOk()).toBe(true);
+		expect(result._unsafeUnwrap()).toBe(expected);
+	});
+
 	it('returns an error for a non-plain object', () => {
 		const obj = [1, 2, 3];
 		const result = mapToCssVars(obj);
