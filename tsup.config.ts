@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
 	clean: true,
 	entry: [
+		'src/a11y/index.ts',
 		'src/collections/index.ts',
 		'src/colors/index.ts',
 		'src/css/index.ts',
