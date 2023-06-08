@@ -5,7 +5,7 @@
  */
 
 import { ok, err, Result } from 'neverthrow';
-import { isArray, isNullish, isObject, isPlainObject, isString, isUndefined } from '../is';
+import { isArray, isEmpty, isNullish, isObject, isPlainObject, isString, isUndefined } from '../is';
 
 /**
  * Checks if a plain JavaScript object has a specified property.
@@ -351,6 +351,7 @@ export function getPropertyValue<T>(obj: T, prop: PropertyKey): any {
  *
  * @typeParam T - The type of the input object.
  * @param obj - The object to convert to a CSS variable string.
+ * @param prefix - A string to be used as prefix for the CSS variable name.
  * @returns A `Result` object with either the CSS variable string, or an `Error` object is the given
  * object is not a plain javascript object.
  *
@@ -362,19 +363,34 @@ export function getPropertyValue<T>(obj: T, prop: PropertyKey): any {
  *```
  *
  * @example
+ * Add a prefix string to the CSS variables
+ * ```typescript
+ * const obj = { primaryColor: '#f00', secondaryColor: '#0f0', fontSize: '16px' };
+ * mapToCssVars(obj, 'pfx')
+ * // => { ok: true, value: '--pfx-primaryColor: #f00; --pfx-secondaryColor: #0f0; --pfx-fontSize: 16px;' }
+ *```
+
+ * @example
  * ```typescript
  * mapToCssVars('a')
  * // => { ok: false, error: Error('[objects.mapToCssVars] Expected a plain javascript object') }
  * ```
  */
-export function mapToCssVars<T extends Record<PropertyKey, any>>(obj: T): Result<string, Error> {
+export function mapToCssVars<T extends Record<PropertyKey, any>>(
+	obj: T,
+	prefix?: string
+): Result<string, Error> {
 	if (!isPlainObject(obj)) {
 		return err(new Error('[objects.mapToCssVarsString] Expected a plain javascript object'));
 	}
 
 	return ok(
 		Object.entries(obj)
-			.map(([key, value]) => `--${key}: ${value};`)
+			.map(([key, value]) =>
+				!isNullish(prefix) && !isEmpty(prefix)
+					? `--${prefix}-${key}: ${value};`
+					: `--${key}: ${value};`
+			)
 			.join(' ')
 	);
 }
