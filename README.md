@@ -22,6 +22,7 @@ A bunch of common utilities in pure Typescript to deal with primitives, strings,
 - [Type-Safe Error Handling](#type-safe-error-handling)
 - [What's inside?](#whats-inside)
   - [Is](#is)
+  - [A11y](#a11y-accessibility)
   - [Collections](#collections)
   - [Colors](#colors)
   - [CSS](#css)
