@@ -22,14 +22,11 @@ A bunch of common utilities in pure Typescript to deal with primitives, strings,
 - [Type-Safe Error Handling](#type-safe-error-handling)
 - [What's inside?](#whats-inside)
   - [Is](#is)
-  - [A11y](#a11y-accessibility)
   - [Collections](#collections)
   - [Colors](#colors)
-  - [CSS](#css)
   - [Dates](#dates)
   - [Objects](#objects)
   - [Paths](#paths)
-  - [ScreenBreakpoint](#screenbreakpoint)
   - [Strings](#strings)
   - [Urls](#urls)
 
@@ -135,42 +132,6 @@ import { ... } from '@sveltinio/ts-utils/is';
 | isUndefined   | Checks if a given value is undefined                 |
 | isEmpty       | Checks if a given value is empty or not              |
 
-### A11y (Accessibility)
-
-The `ComponentFocusManager` class provides focus management for components with multiple interactive items. It enables navigation between items, setting focus to specific items, and handling keyboard interactions.
-
-Use it to ensure keyboard accessibility as per [WAI ARIA Patterns] and improve user experience in menus, dropdowns, and other interactive components.
-
-Read the **[docs](https://ts-utils.sveltin.io/module/a11y.html)**.
-
-```javascript
-import { ComponentFocusManager } from '@sveltinio/ts-utils/a11y';
-```
-
-<br/>
-
-#### Accessors
-
-| Accessor          | Description                                                                   |
-| :---------------- | :-----------------------------------------------------------------------------|
-| items             | A dictionary of items associated with their respective identifiers            |
-| firstChars        | A dictionary of first characters associated with their respective identifiers |
-| firstItem         | A dictionary of the first item associated with their respective identifiers   |
-| lastItem          | A dictionary of the last item associated with their respective identifiers    |
-| applyDOMChangesFn | A function that applies DOM changes asynchronously. E.g. `tick` from _svelte_ |
-
-#### Methods
-
-| Method                 | Description                                                                  |
-| :--------------------- | :--------------------------------------------------------------------------- |
-| run                    | Runs the focus manager to initialize the collections                         |
-| setFocusToFirstItem    | Sets the focus to the first item                                             |
-| setFocusToLastItem     | Sets the focus to the last item.                                             |
-| setFocusToPreviousItem | Sets the focus to the previous item relative to the current item             |
-| setFocusToNextItem     | Sets the focus to the next item relative to the current item                 |
-| setFocusByFirstChar    | Sets the focus to the item whose content starts with the specified character |
-| isSubMenu              | Checks if the given node is a submenu                                        |
-
 ### Collections
 
 Some utilities to deal with arrays.
@@ -211,27 +172,6 @@ import { ... } from '@sveltinio/ts-utils/colors';
 | isHex          | Checks if a given string is a valid hexadecimal color code                  |
 | getHexValue    | Returns either the substring after the first character (if the string is a valid hex value) or an error message |
 | randomHexColor | Returns a string representing a random hex color                            |
-
-### CSS
-
-The `CSSHelper` class is a utility class that provides convenient methods for manipulating CSS classes on HTML elements.
-
-Read the **[docs](https://ts-utils.sveltin.io/module/css.html)**.
-
-```javascript
-import { CSSHelper } from '@sveltinio/ts-utils/css';
-```
-
-<br/>
-
-| Method        | Description                                        |
-| :------------ | :------------------------------------------------- |
-| hasClass      | Checks if an HTML element has a specific CSS class |
-| addClass      | Adds a CSS class to an HTML element                |
-| removeClass   | Removes a CSS class from an HTML element           |
-| toggleClass   | Toggles a CSS class on an HTML element             |
-| addClasses    | Adds multiple CSS classes to an HTML element       |
-| removeClasses | Removes multiple CSS classes from an HTML element  |
 
 ### Dates
 
@@ -297,34 +237,6 @@ import { ... } from '@sveltinio/ts-utils/paths';
 | filename    | Returns the filename from a given file path                                              |
 | isImage     | Checks if a given string is a valid image file name (jpg, jpeg, png, gif, webp, or avif) |
 | lastSegment | Returns the last segment of a given path string                                          |
-
-### ScreenBreakpoint
-
-The `ScreenBreakpointChecker` class provides methods to check the screen size and breakpoints of a device.
-
-Read the **[docs](https://ts-utils.sveltin.io/module/screen-breakpoint.html)**.
-
-```javascript
-import { ScreenBreakpointChecker } from '@sveltinio/ts-utils/screen-breakpoint';
-```
-
-<br/>
-
-#### Methods
-
-| Method            | Description                                                          |
-| :---------------- | :------------------------------------------------------------------- |
-| isBreakpoint      | Checks if the given width matches the specified breakpoint           |
-| getBreakpointName | Returns the matching breakpoint for the given width                  |
-| isMobile          | Returns true if the width corresponds to a mobile screen             |
-| isTablet          | Returns true if the width corresponds to a tablet screen             |
-| isDesktop         | Returns true if the width corresponds to a desktop screen            |
-| isXSmallScreen    | Returns true if the width corresponds to an extra small screen       |
-| isSmallScreen     | Returns true if the width corresponds to a small screen              |
-| isMediumScreen    | Returns true if the width corresponds to a medium screen             |
-| isLargeScreen     | Returns true if the width corresponds to a large screen              |
-| isXLargeScreen    | Returns true if the width corresponds to an extra large screen       |
-| isXXLargeScreen   | Returns true if the width corresponds to a double extra large screen |
 
 ### Strings
 
