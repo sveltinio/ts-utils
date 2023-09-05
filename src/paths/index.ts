@@ -11,6 +11,7 @@
 
 import { Result, err, ok } from 'neverthrow';
 import { isDefined, isEmpty, isString } from '../is/index.js';
+import { isUrl } from '../urls/index.js';
 
 /**
  * Checks if a given path is a valid directory path.
@@ -82,7 +83,12 @@ export function isDir(path: string): boolean {
 export function isFile(path: string): boolean {
 	if (!isString(path)) return false;
 
-	const unixRegex = /^(?!.*\/\0)[^\0]+(\.[^\\/\0]+)?$/;
+	if (isUrl(path)) {
+		const url = new URL(path);
+		path = url.pathname;
+	}
+
+	const unixRegex = /^(?!.*\/\0)([^/]*(?:\/[^/]+)*)(?:\/?)$/;
 	const windowsRegex = /^[a-zA-Z]:\\(?:\w+\\)*\w+\.\w+$/;
 
 	return (unixRegex.test(path) && !path.endsWith('/')) || windowsRegex.test(path);
