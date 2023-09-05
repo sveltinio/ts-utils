@@ -75,6 +75,11 @@ export function removeTrailingSlash(str: string): Result<string, Error> {
 	if (!isString(str)) {
 		return err(new Error('[strings.removeTrailingSlash] Expected string value as input'));
 	}
+
+	if (str.length > 512) {
+		throw err(new Error('Input too long'));
+	}
+
 	return ok(str.replace(/\/+$/g, ''));
 }
 
