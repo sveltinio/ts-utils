@@ -75,7 +75,7 @@ export function removeTrailingSlash(str: string): Result<string, Error> {
 	if (!isString(str)) {
 		return err(new Error('[strings.removeTrailingSlash] Expected string value as input'));
 	}
-	return ok(str.replace(/\/+$/, ''));
+	return ok(str.replace(/\/+$/g, ''));
 }
 
 /**
