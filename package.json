@@ -38,6 +38,7 @@
 		"prettier": "^3.0.3",
 		"publint": "^0.2.2",
 		"release-it": "^16.1.5",
+		"rimraf": "^5.0.1",
 		"shx": "^0.3.4",
 		"tsup": "^7.2.0",
 		"typedoc": "^0.25.1",
@@ -48,7 +49,8 @@
 		"vitest": "^0.34.3"
 	},
 	"scripts": {
-		"build": "pnpm prepare && pnpm test && tsup && pnpm postbuild",
+		"build": "pnpm clean && pnpm prepare && pnpm test && tsup && pnpm postbuild",
+		"clean": "rimraf dist",
 		"watch": "pnpm build -- --watch src",
 		"format": "prettier --plugin-search-dir=. --write .",
 		"lint": "prettier --plugin-search-dir=. --check . && eslint .",
