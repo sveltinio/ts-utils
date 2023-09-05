@@ -19,7 +19,7 @@
 	"githubPages": false,
 	"customCss": "./assets/css/style.css",
 	"out": "docs",
-	"plugin": ["typedoc-plugin-coverage", "typedoc-plugin-extras", "typedoc-plugin-keywords"],
+	"plugin": ["typedoc-plugin-coverage", "typedoc-plugin-keywords"],
 	"keywords": ["typescript", "javascript", "utilities", "helpers", "library"],
 	"coverageLabel": "coverage",
 	"footerTypedocVersion": true,
